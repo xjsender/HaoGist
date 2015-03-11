@@ -1,0 +1,18 @@
+{
+    // Github username
+    "username": "xjsender",
+
+    // Gist token
+    "token": "",
+
+    // Workspace to store the gists
+    "workspace": "/Users/mouse/dropbox/workspace/gist-workspace",
+
+    // Files not shown in the sidebar and Command Palette
+    "file_exclude_patterns": [],
+
+    // Folders not shown in the sidebar and Command Palette
+    "folder_exclude_patterns": [
+        // ".history"
+    ],
+}

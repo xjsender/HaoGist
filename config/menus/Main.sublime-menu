@@ -1,0 +1,39 @@
+[
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "H",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "HaoGist",
+                        "children":
+                        [
+                            {
+                                "command": "open_file", 
+                                "args": {
+                                    "file": "${packages}/HaoGist/config/settings/HaoGist.sublime-settings"
+                                },
+                                "caption": "Settings – Default"
+                            },
+
+                            {
+                                "command": "open_file", 
+                                "args": {
+                                    "file": "${packages}/User/HaoGist.sublime-settings"
+                                },
+                                "caption": "Settings – User"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

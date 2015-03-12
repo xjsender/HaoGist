@@ -1,9 +1,12 @@
 [
     {"caption": "HaoGist: Open Gist", "command": "open_gist"},
-    {"caption": "HaoGist: Create Gist", "command": "create_gist"},
+    {"caption": "HaoGist: Create Public Gist", "command": "create_gist", "args": {"public": true}},
+    {"caption": "HaoGist: Create Private Gist", "command": "create_gist", "args": {"public": false}},
     {"caption": "HaoGist: Update Gist", "command": "update_gist"},
     {"caption": "HaoGist: Refresh Gist", "command": "refresh_gist"},
     {"caption": "HaoGist: Delete Gist", "command": "delete_gist"},
     {"caption": "HaoGist: Clear Gist Cache", "command": "clear_gist_cache"},
+    {"caption": "HaoGist: Reload Gist Cache", "command": "reload_gist_cache"},
+    {"caption": "HaoGist: Refresh Gist Workspace", "command": "refresh_gist_workspace"},
     {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"}
 ]

@@ -1,7 +1,4 @@
 {
-    // Github username
-    "username": "xjsender",
-
     // Gist token
     "token": "",
 
@@ -17,6 +14,6 @@
 
     // Folders not shown in the sidebar and Command Palette
     "folder_exclude_patterns": [
-        ".cache"
+        // ".cache"
     ],
 }

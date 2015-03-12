@@ -1,12 +1,31 @@
 import sublime, sublime_plugin
 import os
 import json
+import requests
 
-from . import requests
-from .gistapi import Gist, Gists
+from .api import Gist
 from .lib import util
 from .lib.panel import Printer
+from .api import GIST_BASE_URL as base_url
 
+
+class RefreshGistWorkspace(sublime_plugin.WindowCommand):
+    def __init__(self, *args, **kwargs):
+        super(RefreshGistWorkspace, self).__init__(*args, **kwargs)
+
+    def run(self):
+        settings = util.get_settings()
+        util.show_workspace_in_sidebar(settings)
+
+class ReloadGistCache(sublime_plugin.WindowCommand):
+    def __init__(self, *args, **kwargs):
+        super(ReloadGistCache, self).__init__(*args, **kwargs)
+
+    def run(self):
+        settings = util.get_settings()
+        gist = Gist(settings["token"])
+        gists = gist.list(force=True)
+        util.add_gists_to_cache(gists)
 
 class ClearGistCache(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
@@ -27,19 +46,20 @@ class OpenGist(sublime_plugin.WindowCommand):
 
     def run(self):
         self.settings = util.get_settings()
-        gi = Gists(self.settings["username"], self.settings["token"])
-
-        self.files = []
-        self.files_settings = {}
-        gists = []
-        for gist in gi.gists:
-            gists.append(gist._json)
-            for key, value in gist.filenames.items():
-                self.files.append(key)
-                self.files_settings[key] = value
+        gist = Gist(self.settings["token"])
+        _gists = gist.list()
 
         # Keep the gists to cache
-        util.add_gists_to_cache(gists)
+        util.add_gists_to_cache(_gists)
+
+        # Show the filenames in the quick panel
+        self.files = []
+        self.files_settings = {}
+        for _gist in _gists:
+            for key, value in _gist["files"].items():
+                description = _gist["description"]
+                self.files.append([key, description if description else ""])
+                self.files_settings[key] = value
 
         self.files = sorted(self.files)
         self.window.show_quick_panel(self.files, self.on_done)
@@ -47,7 +67,7 @@ class OpenGist(sublime_plugin.WindowCommand):
     def on_done(self, index):
         if index == -1: return
 
-        file_settings = self.files_settings[self.files[index]]
+        file_settings = self.files_settings[self.files[index][0]]
         headers = {"Accept": "application/json; charset=UTF-8"}
         res = requests.get(file_settings["raw_url"], headers=headers)
         res.encoding = "utf-8"
@@ -67,7 +87,8 @@ class OpenGist(sublime_plugin.WindowCommand):
         sublime.active_window().open_file(file_name)
 
 class CreateGist(sublime_plugin.TextCommand):
-    def run(self, edit):
+    def run(self, edit, public=False):
+        self.public = public
         self.settings = util.get_settings()
 
         sublime.active_window().show_input_panel("Gist File Name: (Required)", 
@@ -80,14 +101,10 @@ class CreateGist(sublime_plugin.TextCommand):
             filename, self.on_input_descrition, None, None)
 
     def on_input_descrition(self, desc):
-        post_url = "https://api.github.com/gists"
-        headers = {
-            "Accept": "application/json",
-            "Authorization": "token %s" % self.settings["token"]
-        }
+        post_url = base_url % "gists"
         data = {
             "description": desc,
-            "public": True,
+            "public": self.public,
             "files": {
                 self.filename : {
                     "content": self.content
@@ -95,7 +112,8 @@ class CreateGist(sublime_plugin.TextCommand):
             }
         }
 
-        res = requests.post(post_url, data=json.dumps(data), headers=headers)
+        gist = Gist(self.settings["token"])
+        res = gist.post(post_url, data)
 
         if res.status_code < 399 and "id" in res.json():
             # Write file to workspace
@@ -123,10 +141,9 @@ class CreateGist(sublime_plugin.TextCommand):
 class UpdateGist(sublime_plugin.TextCommand):
     def run(self, edit):
         self.settings = util.get_settings()
-        gi = Gists(self.settings["username"], self.settings["token"])
-        filep, gist = gi.get_gist_by_filename(self.filename)
 
         body = open(self.view.file_name(), encoding="utf-8").read()
+        path_url = ""
         payload = {
             "files": {
                 self.filename: {
@@ -135,8 +152,10 @@ class UpdateGist(sublime_plugin.TextCommand):
             }
         }
 
-        res = gist.patch(payload)
+        gist = Gist(self.settings["token"])
+        filep, _gist = gist.get_gist_by_filename(self.filename)
 
+        res = gist.patch(_gist["url"], payload)
         if res.status_code < 399 and "id" in res.json():
             Printer.get("log").write("%s is update successfully" % self.filename)
 
@@ -150,8 +169,8 @@ class UpdateGist(sublime_plugin.TextCommand):
 class RefreshGist(sublime_plugin.TextCommand):
     def run(self, edit):
         self.settings = util.get_settings()
-        gi = Gists(self.settings["username"], self.settings["token"])
-        filep, gist = gi.get_gist_by_filename(self.filename)
+        gist = Gist(self.settings["token"])
+        filep, _gist = gist.get_gist_by_filename(self.filename)
 
         res = gist.retrieve(filep["raw_url"])
         if res.status_code < 399:
@@ -171,10 +190,9 @@ class RefreshGist(sublime_plugin.TextCommand):
 class OpenGistInBrowser(sublime_plugin.TextCommand):
     def run(self, edit):
         self.settings = util.get_settings()
-        gi = Gists(self.settings["username"], self.settings["token"])
-        filep, gist = gi.get_gist_by_filename(self.filename)
-
-        util.open_with_browser(gist.open_url)
+        gist = Gist(self.settings["token"])
+        filep, _gist = gist.get_gist_by_filename(self.filename)
+        util.open_with_browser(_gist["html_url"])
 
     def is_enabled(self):
         if not self.view or not self.view.file_name(): return False
@@ -186,10 +204,10 @@ class OpenGistInBrowser(sublime_plugin.TextCommand):
 class DeleteGist(sublime_plugin.TextCommand):
     def run(self, edit):
         self.settings = util.get_settings()
-        gi = Gists(self.settings["username"], self.settings["token"])
-        filep, gist = gi.get_gist_by_filename(self.filename)
+        gist = Gist(self.settings["token"])
+        filep, _gist = gist.get_gist_by_filename(self.filename)
 
-        res = gist.delete()
+        res = gist.delete(_gist["url"])
         if res.status_code < 399:
             view = util.get_view_by_file_name(self.file_name)
             if view:

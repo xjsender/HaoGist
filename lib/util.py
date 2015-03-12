@@ -25,7 +25,6 @@ def get_settings():
     
     settings = {}
     s = sublime.load_settings("HaoGist.sublime-settings")
-    settings["username"] = s.get("username")
     settings["token"] = s.get("token")
     settings["workspace"] = s.get("workspace")
     settings["file_exclude_patterns"] = s.get("file_exclude_patterns", {})

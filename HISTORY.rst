@@ -4,6 +4,8 @@
 * Add ``refresh gist`` command
 * Add ``refresh gist`` command
 * Add ``delete gist`` command
+* Add ``create gist`` command
+* Add ``clear gist cache`` command
 * Add ``open gist in browser`` command
 
 

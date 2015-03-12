@@ -25,7 +25,7 @@ class Gist(object):
 
         self.open_url = "https://gist.github.com/%s" % self.id
         self.url = url = GIST_BASE_URL % "gists/%s" % self.id
-        self.post_url = GIST_BASE_URL % 'gists/%s' % self.id
+        self.post_url = GIST_BASE_URL % 'gists'
         self.patch_url = GIST_BASE_URL % 'gists/%s' % self.id
         self.comments  = []
 
@@ -134,38 +134,6 @@ class Gist(object):
         except KeyError:
             # New file
             pass
-
-    def save(self):
-        """Upload the changes to Github."""
-        params = {
-            '_method': 'put',
-            'login': self._username or USERNAME,
-            'token': self._token or TOKEN,
-        }
-        names_map = self._renames
-        original_names = names_map.values()
-        index = len(original_names)
-        for fn, content in self.files.items():
-            ext = os.path.splitext(fn)[1] or '.txt'
-            try:
-                orig = names_map.pop(fn)
-            except KeyError:
-                # Find a unique filename
-                while True:
-                    orig = 'gistfile%s' % index
-                    index += 1
-                    if orig not in original_names:
-                        break
-            params.update({
-                'file_name[%s]' % orig: fn,
-                'file_ext[%s]' % orig: ext,
-                'file_contents[%s]' % orig: content,
-            })
-        code, msg = self.post(params=params)
-        if code == 200:  # OK
-            # If successful, clear the cache
-            self.reset()
-        return code, msg
 
 class Gists(object):
     """Gist API wrapper"""

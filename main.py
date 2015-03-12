@@ -8,6 +8,19 @@ from .lib import util
 from .lib.panel import Printer
 
 
+class ClearGistCache(sublime_plugin.WindowCommand):
+    def __init__(self, *args, **kwargs):
+        super(ClearGistCache, self).__init__(*args, **kwargs)
+
+    def run(self):
+        settings = util.get_settings()
+        cachedir = os.path.join(settings["workspace"], ".cache", "gists.json")
+        try:
+            os.remove(cachedir)
+            Printer.get("log").write("Gist cache is cleared")
+        except:
+            Printer.get("error").write("Gist cache clear failed")
+
 class OpenGist(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
         super(OpenGist, self).__init__(*args, **kwargs)
@@ -18,15 +31,15 @@ class OpenGist(sublime_plugin.WindowCommand):
 
         self.files = []
         self.files_settings = {}
-        caches = []
+        gists = []
         for gist in gi.gists:
-            caches.append(gist._json)
+            gists.append(gist._json)
             for key, value in gist.filenames.items():
                 self.files.append(key)
                 self.files_settings[key] = value
 
-        # Keep the caches
-        util.add_caches(caches)
+        # Keep the gists to cache
+        util.add_gists_to_cache(gists)
 
         self.files = sorted(self.files)
         self.window.show_quick_panel(self.files, self.on_done)
@@ -37,7 +50,7 @@ class OpenGist(sublime_plugin.WindowCommand):
         file_settings = self.files_settings[self.files[index]]
         headers = {"Accept": "application/json; charset=UTF-8"}
         res = requests.get(file_settings["raw_url"], headers=headers)
-        res.encoding = "UTF-8"
+        res.encoding = "utf-8"
 
         workspace = self.settings["workspace"]
         if not os.path.exists(workspace):
@@ -48,14 +61,64 @@ class OpenGist(sublime_plugin.WindowCommand):
 
         file_name = os.path.join(workspace, file_settings["filename"])
         with open(file_name, "wb") as fp:
-            fp.write(res.text.encode("UTF-8"))
-
-        # In windows, new file is not shown in the sidebar, 
-        # we need to refresh the sublime workspace to show it
-        sublime.active_window().run_command("refresh_folder_list")
+            fp.write(res.text.encode("utf-8"))
 
         # Then open the file
         sublime.active_window().open_file(file_name)
+
+class CreateGist(sublime_plugin.TextCommand):
+    def run(self, edit):
+        self.settings = util.get_settings()
+
+        sublime.active_window().show_input_panel("Gist File Name: (Required)", 
+            '', self.on_input_name, None, None)
+
+    def on_input_name(self, filename):
+        self.filename = filename
+
+        sublime.active_window().show_input_panel('Gist Description: (optional):', 
+            filename, self.on_input_descrition, None, None)
+
+    def on_input_descrition(self, desc):
+        post_url = "https://api.github.com/gists"
+        headers = {
+            "Accept": "application/json",
+            "Authorization": "token %s" % self.settings["token"]
+        }
+        data = {
+            "description": desc,
+            "public": True,
+            "files": {
+                self.filename : {
+                    "content": self.content
+                }
+            }
+        }
+
+        res = requests.post(post_url, data=json.dumps(data), headers=headers)
+
+        if res.status_code < 399 and "id" in res.json():
+            # Write file to workspace
+            file_name = self.settings["workspace"] + "/" + self.filename
+            with open(file_name, "wb") as fp:
+                fp.write(self.content.encode("utf-8"))
+
+            # Write cache to .cache/gists.json
+            util.add_gists_to_cache([res.json()])
+
+            # Success message
+            Printer.get("log").write("%s is update successfully" % self.filename)
+
+    def is_enabled(self):
+        self.content = self.view.substr(self.view.sel()[0])
+
+        if not self.content:
+            self.content = self.view.substr(sublime.Region(0, self.view.size()))
+
+        if not self.content:
+            return False
+
+        return True
 
 class UpdateGist(sublime_plugin.TextCommand):
     def run(self, edit):
@@ -72,7 +135,7 @@ class UpdateGist(sublime_plugin.TextCommand):
             }
         }
 
-        res = gist.post(payload)
+        res = gist.patch(payload)
 
         if res.status_code < 399 and "id" in res.json():
             Printer.get("log").write("%s is update successfully" % self.filename)

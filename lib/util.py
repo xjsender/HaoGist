@@ -3,17 +3,22 @@ import os
 import json
 import webbrowser
 
-def add_caches(caches):
-    """Keep the caches"""
+def add_gists_to_cache(gists):
+    """Add gist the caches"""
     
     settings = get_settings()
     outputdir = settings["workspace"]+"/.cache"
-    if not os.path.exists(outputdir): 
+    cachedir = os.path.join(outputdir, "/gists.json")
+    
+    caches = []
+    if os.path.isfile(cachedir) and len(gists) == 1:
+        caches = json.loads(open(cachedir).read())
+    elif not os.path.exists(outputdir):
         os.makedirs(outputdir)
+    caches.extend(gists)
 
-    fp = open(outputdir + "/gists.json", "w")
-    fp.write(json.dumps(caches, indent=4))
-    fp.close()
+    with open(outputdir + "/gists.json", "w") as fp:
+        fp.write(json.dumps(caches, indent=4))
 
 def get_settings():
     """ Load settings from sublime-settings"""

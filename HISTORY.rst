@@ -1,3 +1,12 @@
+0.0.2 (2015-03-12)
+++++++++++++++++++
+* Add ``update gist`` command
+* Add ``refresh gist`` command
+* Add ``refresh gist`` command
+* Add ``delete gist`` command
+* Add ``open gist in browser`` command
+
+
 0.0.1 (2015-03-12)
 ++++++++++++++++++
 * Optimize the cache feature

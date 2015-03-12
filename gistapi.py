@@ -14,13 +14,19 @@ class Gist(object):
         self._username = username
         self._token = token
 
+        self.headers = {"Accept": "application/json"}
+        if self._token:
+            self.headers["Authorization"] = "token %s" % self._token
+
         # Map given repo id to gist id if none exists
         
         if self._json:
             self.id = self._json['id']
 
+        self.open_url = "https://gist.github.com/%s" % self.id
         self.url = url = GIST_BASE_URL % "gists/%s" % self.id
         self.post_url = GIST_BASE_URL % 'gists/%s' % self.id
+        self.patch_url = GIST_BASE_URL % 'gists/%s' % self.id
         self.comments  = []
 
     def __getattribute__(self, name):
@@ -76,18 +82,30 @@ class Gist(object):
                 #     setattr(self, 'comments', _comments)
 
             elif isinstance(value, str):
-                setattr(self, key, value.encode('utf-8') if value else "")
+                setattr(self, key, value if value else "")
 
             else:
                 setattr(self, key, value)
                 
         return _meta
 
-    def _post(self, params, headers={"Accept": "application/json"}):
-        """POST to the web form (internal method)."""
-        r = requests.post(self.post_url, params, headers=headers)
+    def get(self):
+        return requests.get(self.url, headers=self.headers)
 
-        return r.status_code, r.json()
+    def retrieve(self, raw_url):
+        return requests.get(raw_url, headers=self.headers)
+
+    def post(self, params):
+        """POST to the web form (internal method)."""
+        
+        return requests.post(self.post_url, data=json.dumps(params), 
+            headers=self.headers)
+
+    def patch(self, params):
+        """POST to the web form (internal method)."""
+
+        return requests.patch(self.patch_url, data=json.dumps(params), 
+            headers=self.headers)
 
     def reset(self):
         """Clear the local cache."""
@@ -101,10 +119,8 @@ class Gist(object):
         self._username = username
         self._token = token
 
-    def delete(self, headers={"Accept": "application/json"}):
-        r = requests.delete(self.url, headers)
-
-        return r.status_code, r.json()
+    def delete(self):
+        return requests.delete(self.url, headers=self.headers)
 
     def rename(self, from_name, to_name):
         """Rename a file."""
@@ -145,7 +161,7 @@ class Gist(object):
                 'file_ext[%s]' % orig: ext,
                 'file_contents[%s]' % orig: content,
             })
-        code, msg = self._post(params=params)
+        code, msg = self.post(params=params)
         if code == 200:  # OK
             # If successful, clear the cache
             self.reset()
@@ -165,7 +181,6 @@ class Gists(object):
         # Read cache
         settings = util.get_settings()
         cache_dir = os.path.join(settings["workspace"], ".cache", "gists.json")
-        gists = None
         if os.path.isfile(cache_dir):
             gists = json.loads(open(cache_dir).read())
             return [Gist(json=g, token=token) for g in gists]
@@ -178,12 +193,15 @@ class Gists(object):
         return [Gist(json=g, token=token) for g in gists]
 
     def get_gist_by_id(self, gist_id):
-        if isinstance(gist_id, str):
-            gist_id = gist_id.encode("utf-8")
-
         for g in self.gists:
             if gist_id == g.id:
                 return g
+
+    def get_gist_by_filename(self, fn):
+        for g in self.gists:
+            for filename in g.filenames:
+                if filename == fn:
+                    return g.filenames[filename], g
 
 class GistComment(object):
     """Gist comments."""

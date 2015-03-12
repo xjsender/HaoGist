@@ -1,3 +1,7 @@
 [
     {"caption": "HaoGist: Open Gist", "command": "open_gist"},
+    {"caption": "HaoGist: Update Gist", "command": "update_gist"},
+    {"caption": "HaoGist: Refresh Gist", "command": "refresh_gist"},
+    {"caption": "HaoGist: Delete Gist", "command": "delete_gist"},
+    {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"}
 ]

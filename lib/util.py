@@ -1,6 +1,7 @@
 import sublime
 import os
 import json
+import webbrowser
 
 def add_caches(caches):
     """Keep the caches"""
@@ -24,9 +25,82 @@ def get_settings():
     settings["workspace"] = s.get("workspace")
     settings["file_exclude_patterns"] = s.get("file_exclude_patterns", {})
     settings["folder_exclude_patterns"] = s.get("folder_exclude_patterns", [])
+    settings["default_chrome_path"] = s.get("default_chrome_path", "")
 
     return settings
 
+def open_with_browser(show_url, use_default_chrome=True):
+    """ Utility for open file in browser
+
+    Arguments:
+
+    * use_default_browser -- optional; if true, use chrome configed in settings to open it
+    """
+
+    settings = get_settings()
+    browser_path = settings["default_chrome_path"]
+    if not use_default_chrome or not os.path.exists(browser_path):
+        webbrowser.open_new_tab(show_url)
+    else:
+        webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(browser_path))
+        webbrowser.get('chrome').open_new_tab(show_url)
+
+def get_view_by_name(view_name):
+    """Get view by view name
+
+    Arguments:
+
+    * view_name -- name of view in sublime
+
+    Returns:
+
+    * view -- sublime open tab
+    """
+    view = None
+    for v in sublime.active_window().views():
+        if not v.name(): continue
+        if v.name() == view_name:
+            view = v
+
+    return view
+
+def get_view_by_file_name(file_name):
+    """
+    Get the view in the active window by the view_name
+
+    Arguments:
+
+    * view_id: view name
+
+    Returns:
+
+    * return: view
+    """
+
+    view = None
+    for v in sublime.active_window().views():
+        if not v.file_name(): continue
+        if file_name in v.file_name():
+            view = v
+
+    return view
+
+def get_view_by_id(view_id):
+    """
+    Get the view in the active window by the view_id
+
+    * view_id: id of view
+    * return: view
+    """
+
+    view = None
+    for v in sublime.active_window().views():
+        if not v.id(): continue
+        if v.id() == view_id:
+            view = v
+
+    return view
+    
 def show_workspace_in_sidebar(settings):
     """Add new project folder to workspace
        Just Sublime Text 3 can support this method

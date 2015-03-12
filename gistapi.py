@@ -168,7 +168,7 @@ class Gists(object):
         gists = None
         if os.path.isfile(cache_dir):
             gists = json.loads(open(cache_dir).read())
-            return [Gist(json=v, token=token) for k, v in gists.items()]
+            return [Gist(json=g, token=token) for g in gists]
 
         _url = GIST_BASE_URL % "users/%s/gists" % name
         headers = {"Authorization" : "token %s" % token}

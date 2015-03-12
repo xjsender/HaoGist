@@ -16,12 +16,12 @@ class OpenGist(sublime_plugin.WindowCommand):
 
         self.files = []
         self.files_settings = {}
-        caches = {}
+        caches = []
         for gist in gi.gists:
+            caches.append(gist._json)
             for key, value in gist.filenames.items():
                 self.files.append(key)
                 self.files_settings[key] = value
-                caches[value["filename"]] = gist._json
 
         # Keep the caches
         util.add_caches(caches)

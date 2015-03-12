@@ -11,7 +11,7 @@ def add_caches(caches):
         os.makedirs(outputdir)
 
     fp = open(outputdir + "/gists.json", "w")
-    fp.write(json.dumps(dict(caches), indent=4))
+    fp.write(json.dumps(caches, indent=4))
     fp.close()
 
 def get_settings():

@@ -6,4 +6,4 @@ This plugin will be hosted on [package control](https://sublime.wbond.net/packag
 
 # Build-in Dependency Lib
 + [requests](https://github.com/kennethreitz/requests)
-+ [xmltodict](https://github.com/kennethreitz/gistapi.py)
++ [gistapi](https://github.com/kennethreitz/gistapi.py)

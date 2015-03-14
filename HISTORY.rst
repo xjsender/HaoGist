@@ -1,5 +1,13 @@
 0.0.4 (2015-03-14)
 ++++++++++++++++++
+* Add two commands for default setting and user setting for HaoGist
+* Update README.MD
+* Correct messages
+* Add more detail in the install message
+
+
+0.0.4 (2015-03-14)
+++++++++++++++++++
 * Fix install bug
 * Fix ```cache``` bug
 

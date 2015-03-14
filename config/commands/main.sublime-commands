@@ -8,5 +8,15 @@
     {"caption": "HaoGist: Clear Gist Cache", "command": "clear_gist_cache"},
     {"caption": "HaoGist: Reload Gist Cache", "command": "reload_gist_cache"},
     {"caption": "HaoGist: Refresh Gist Workspace", "command": "refresh_gist_workspace"},
-    {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"}
+    {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"},
+    {"caption": "HaoGist: Settings – Default", "command": "open_file", 
+        "args": {
+            "file": "${packages}/HaoGist/config/settings/HaoGist.sublime-settings"
+        }
+    },
+    {"caption": "HaoGist: Settings – User", "command": "open_file", 
+        "args": {
+            "file": "${packages}/User/HaoGist.sublime-settings"
+        }
+    }
 ]

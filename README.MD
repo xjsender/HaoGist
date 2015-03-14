@@ -2,7 +2,7 @@
 As you know, there already has a <a href="https://github.com/condemil/Gist">sublime gist plugin</a>, however, there is no cache handler and it seems the author already stop to develop on it, so I decide to develop this gist plugin.
 
 ## Installation
-This plugin will be hosted on [package control](https://sublime.wbond.net/packages/HaoGist) in the soon later.
+This plugin is hosted on [package control](https://sublime.wbond.net/packages/HaoGist), you should upgrade package control to v3.0, because just v3.0 support dependencies.json feature.
 
 ## Configuration
 * After plugin is installed, you should set your own gist workspace in your user settings, you can open this settings file by entering ```HaoGist: Settings User``` in the command palette.

@@ -21,7 +21,7 @@ This plugin will be hosted on [package control](https://sublime.wbond.net/packag
 
 ### How to get gist token?
 * [Via Web](https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
-* [Via curl]
+* Via curl
 ```bash
 curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
 ```

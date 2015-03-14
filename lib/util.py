@@ -7,8 +7,8 @@ def add_gists_to_cache(gists):
     """Add gist the caches"""
     
     settings = get_settings()
-    outputdir = settings["workspace"]+"/.cache"
-    cachedir = os.path.join(outputdir, "/gists.json")
+    outputdir = os.path.join(settings["workspace"], ".cache")
+    cachedir = os.path.join(outputdir, "gists.json")
     
     caches = []
     if os.path.isfile(cachedir) and len(gists) == 1:

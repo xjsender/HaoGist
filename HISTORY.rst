@@ -1,3 +1,8 @@
+0.0.7 (2015-03-15)
+++++++++++++++++++
+* Add thread progress for ``open_gist``
+
+
 0.0.6 (2015-03-15)
 ++++++++++++++++++
 * Add thread progress for CRUD on gist

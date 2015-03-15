@@ -96,25 +96,16 @@ class OpenGist(sublime_plugin.WindowCommand):
 
     def on_done(self, index):
         if index == -1: return
+        filep = self.files_settings[self.files[index][0]]
 
-        file_settings = self.files_settings[self.files[index][0]]
-        headers = {"Accept": "application/json; charset=UTF-8"}
-        res = requests.get(file_settings["raw_url"], headers=headers)
-        res.encoding = "utf-8"
-
-        workspace = self.settings["workspace"]
-        if not os.path.exists(workspace):
-            os.makedirs(workspace)
-        
-        # Show workspace in the sidebar
-        util.show_workspace_in_sidebar(self.settings)
-
-        file_name = os.path.join(workspace, file_settings["filename"])
-        with open(file_name, "wb") as fp:
-            fp.write(res.text.encode("utf-8"))
-
-        # Then open the file
-        sublime.active_window().open_file(file_name)
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.retrieve, args=(filep["raw_url"], ))
+        thread.start()
+        ThreadProgress(api, thread, 'Opening Gist %s' % filep["filename"], 
+            callback.open_gist, _callback_options={
+                "filename": filep["filename"]
+            }
+        )
 
 class CreateGist(sublime_plugin.TextCommand):
     def run(self, edit, public=False):
@@ -146,7 +137,7 @@ class CreateGist(sublime_plugin.TextCommand):
         thread = threading.Thread(target=api.post, args=(post_url, data, ))
         thread.start()
         ThreadProgress(api, thread, 'Refreshing Gist %s' % self.filename, 
-            callback.create_gist, _callback_options = {
+            callback.create_gist, _callback_options={
                 "filename": self.filename,
                 "content": self.content
             }
@@ -178,7 +169,7 @@ class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
         thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
         thread.start()
         ThreadProgress(api, thread, 'Updating Gist %s' % self.filename, 
-            callback.update_gist, _callback_options = {
+            callback.update_gist, _callback_options={
                 "file_full_name": self.file_full_name
             }
         )
@@ -189,7 +180,7 @@ class RefreshGist(BaseGistView, sublime_plugin.TextCommand):
         thread = threading.Thread(target=api.retrieve, args=(self.filep["raw_url"], ))
         thread.start()
         ThreadProgress(api, thread, 'Refreshing Gist %s' % self.filename, 
-            callback.refresh_gist, _callback_options = {
+            callback.refresh_gist, _callback_options={
                 "file_full_name": self.file_full_name
             }
         )
@@ -204,7 +195,7 @@ class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
         thread = threading.Thread(target=api.delete, args=(self._gist["url"], ))
         thread.start()
         ThreadProgress(api, thread, 'Deleting Gist %s' % self.filename, 
-            callback.delete_gist, _callback_options = {
+            callback.delete_gist, _callback_options={
                 "file_full_name": self.file_full_name
             }
         )

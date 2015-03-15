@@ -36,7 +36,9 @@ class GistApi(object):
         return self.res
 
     def retrieve(self, raw_url):
+        self.headers["Accept"] = "application/text"
         self.res = requests.get(raw_url, headers=self.headers)
+        return self.res
 
     def post(self, post_url, params):
         """POST to the web form"""

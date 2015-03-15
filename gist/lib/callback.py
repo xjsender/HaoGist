@@ -17,6 +17,25 @@ def refresh_gist(res, options):
     sublime.set_timeout_async(Printer.get("log").hide_panel, 
         settings["delay_seconds_for_hiding_panel"] * 1000)
 
+def open_gist(res, options):
+    filename = options["filename"]
+    settings = util.get_settings()
+
+    workspace = settings["workspace"]
+    if not os.path.exists(workspace):
+        os.makedirs(workspace)
+    
+    # Show workspace in the sidebar
+    util.show_workspace_in_sidebar(settings)
+
+    res.encoding = "utf-8"
+    file_full_name = os.path.join(workspace, filename)
+    with open(file_full_name, "wb") as fp:
+        fp.write(res.text.encode("utf-8"))
+
+    # Then open the file
+    sublime.active_window().open_file(file_full_name)
+
 def delete_gist(res, options):
     # Get file_full_name
     file_full_name = options["file_full_name"]

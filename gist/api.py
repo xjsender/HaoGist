@@ -1,16 +1,16 @@
 import os
 import json
 import requests
-from datetime import datetime
 
 from .lib import util
 
 GIST_BASE_URL = "https://api.github.com/%s"
 
-class Gist(object):
+class GistApi(object):
     """Gist API wrapper"""
 
     def __init__(self, token):
+        self.res = None
         self._token = token
         self.headers = {
             "Accept": "application/json",
@@ -32,35 +32,27 @@ class Gist(object):
         return _gists
 
     def get(self, url):
-        return requests.get(url, headers=self.headers)
+        self.res = requests.get(url, headers=self.headers)
+        return self.res
 
     def retrieve(self, raw_url):
-        return requests.get(raw_url, headers=self.headers)
+        self.res = requests.get(raw_url, headers=self.headers)
 
     def post(self, post_url, params):
         """POST to the web form"""
         
-        return requests.post(post_url, data=json.dumps(params), 
+        print (params)
+        self.res = requests.post(post_url, data=json.dumps(params), 
             headers=self.headers)
+        return self.res
 
     def patch(self, patch_url, params):
         """POST to the web form"""
 
-        return requests.patch(patch_url, data=json.dumps(params), 
+        self.res = requests.patch(patch_url, data=json.dumps(params), 
             headers=self.headers)
+        return self.res
 
     def delete(self, url):
-        return requests.delete(url, headers=self.headers)
-
-    def get_gist_by_id(self, gist_id):
-        _gists = self.list()
-        for _gist in self.list():
-            if gist_id == _gist["id"]:
-                return _gist
-
-    def get_gist_by_filename(self, fn):
-        _gists = self.list()
-        for _gist in _gists:
-            for key, value in _gist["files"].items():
-                if key == fn:
-                    return _gist["files"][key], _gist
+        self.res = requests.delete(url, headers=self.headers)
+        return self.res

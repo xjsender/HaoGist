@@ -1,4 +1,12 @@
-0.0.4 (2015-03-14)
+0.0.6 (2015-03-15)
+++++++++++++++++++
+* Add thread progress for CRUD on gist
+* Refactoring this plugin, add callback support to thread
+* If CRUD succeed, just hide the panel after lots of seconds
+* Add a ``delay_seconds_for_hiding_panel`` setting to control the panel hiding delay seconds
+
+
+0.0.5 (2015-03-14)
 ++++++++++++++++++
 * Add two commands for default setting and user setting for HaoGist
 * Update README.MD

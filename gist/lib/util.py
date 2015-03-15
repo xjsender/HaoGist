@@ -30,6 +30,7 @@ def get_settings():
     settings["file_exclude_patterns"] = s.get("file_exclude_patterns", {})
     settings["folder_exclude_patterns"] = s.get("folder_exclude_patterns", [])
     settings["default_chrome_path"] = s.get("default_chrome_path", "")
+    settings["delay_seconds_for_hiding_panel"] = s.get("delay_seconds_for_hiding_panel", 1)
 
     return settings
 

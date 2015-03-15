@@ -2,12 +2,42 @@ import sublime, sublime_plugin
 import os
 import json
 import requests
+import threading
 
-from .api import Gist
-from .lib import util
-from .lib.panel import Printer
-from .api import GIST_BASE_URL as base_url
+from .gist.api import GistApi
+from .gist.api import GIST_BASE_URL as base_url
+from .gist.lib import util
+from .gist.lib import callback
+from .gist.lib.progress import ThreadProgress
+from .gist.lib.panel import Printer
 
+
+class BaseGistView(object):
+    """Base Class for Command with view"""
+    def is_enabled(self):
+        if not self.view or not self.view.file_name(): return False
+
+        # Rad file_full_name and filename
+        self.file_full_name = self.view.file_name()
+        base, self.filename = os.path.split(self.file_full_name)
+
+        # Read gists, if not exists, just disable related command
+        self.settings = util.get_settings()
+        cache_dir = os.path.join(self.settings["workspace"], ".cache", "gists.json")
+        if not os.path.isfile(cache_dir): return False
+        self._gists = json.loads(open(cache_dir).read())
+
+        # Read related _gist
+        self.filep, self._gist = None, None
+        for g in self._gists:
+            for key, value in g["files"].items():
+                if key == self.filename:
+                    self.filep, self._gist = g["files"][key], g
+
+        # If not exists, just disable command
+        if not self._gist: return False
+
+        return True
 
 class RefreshGistWorkspace(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
@@ -23,8 +53,8 @@ class ReloadGistCache(sublime_plugin.WindowCommand):
 
     def run(self):
         settings = util.get_settings()
-        gist = Gist(settings["token"])
-        gists = gist.list(force=True)
+        api = GistApi(settings["token"])
+        gists = api.list(force=True)
         util.add_gists_to_cache(gists)
 
 class ClearGistCache(sublime_plugin.WindowCommand):
@@ -46,8 +76,8 @@ class OpenGist(sublime_plugin.WindowCommand):
 
     def run(self):
         self.settings = util.get_settings()
-        gist = Gist(self.settings["token"])
-        _gists = gist.list()
+        api = GistApi(self.settings["token"])
+        _gists = api.list()
 
         # Keep the gists to cache
         util.add_gists_to_cache(_gists)
@@ -112,20 +142,15 @@ class CreateGist(sublime_plugin.TextCommand):
             }
         }
 
-        gist = Gist(self.settings["token"])
-        res = gist.post(post_url, data)
-
-        if res.status_code < 399 and "id" in res.json():
-            # Write file to workspace
-            file_name = self.settings["workspace"] + "/" + self.filename
-            with open(file_name, "wb") as fp:
-                fp.write(self.content.encode("utf-8"))
-
-            # Write cache to .cache/gists.json
-            util.add_gists_to_cache([res.json()])
-
-            # Success message
-            Printer.get("log").write("%s is update successfully" % self.filename)
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.post, args=(post_url, data, ))
+        thread.start()
+        ThreadProgress(api, thread, 'Refreshing Gist %s' % self.filename, 
+            callback.create_gist, _callback_options = {
+                "filename": self.filename,
+                "content": self.content
+            }
+        )
 
     def is_enabled(self):
         self.content = self.view.substr(self.view.sel()[0])
@@ -138,13 +163,10 @@ class CreateGist(sublime_plugin.TextCommand):
 
         return True
 
-class UpdateGist(sublime_plugin.TextCommand):
+class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
-        self.settings = util.get_settings()
-
         body = open(self.view.file_name(), encoding="utf-8").read()
-        path_url = ""
-        payload = {
+        data = {
             "files": {
                 self.filename: {
                     "content": body
@@ -152,76 +174,37 @@ class UpdateGist(sublime_plugin.TextCommand):
             }
         }
 
-        gist = Gist(self.settings["token"])
-        filep, _gist = gist.get_gist_by_filename(self.filename)
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
+        thread.start()
+        ThreadProgress(api, thread, 'Updating Gist %s' % self.filename, 
+            callback.update_gist, _callback_options = {
+                "file_full_name": self.file_full_name
+            }
+        )
 
-        res = gist.patch(_gist["url"], payload)
-        if res.status_code < 399 and "id" in res.json():
-            Printer.get("log").write("%s is update successfully" % self.filename)
-
-    def is_enabled(self):
-        if not self.view or not self.view.file_name(): return False
-
-        base, self.filename = os.path.split(self.view.file_name())
-
-        return True
-
-class RefreshGist(sublime_plugin.TextCommand):
+class RefreshGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
-        self.settings = util.get_settings()
-        gist = Gist(self.settings["token"])
-        filep, _gist = gist.get_gist_by_filename(self.filename)
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.retrieve, args=(self.filep["raw_url"], ))
+        thread.start()
+        ThreadProgress(api, thread, 'Refreshing Gist %s' % self.filename, 
+            callback.refresh_gist, _callback_options = {
+                "file_full_name": self.file_full_name
+            }
+        )
 
-        res = gist.retrieve(filep["raw_url"])
-        if res.status_code < 399:
-            with open(self.view.file_name(), "wb") as fp:
-                fp.write(res.content)
-            Printer.get("log").write("%s update succeed" % self.filename)
-        else:
-            Printer.get("error").write("%s update failed" %  (self.filename, json.dumps(res.json)))
-
-    def is_enabled(self):
-        if not self.view or not self.view.file_name(): return False
-
-        base, self.filename = os.path.split(self.view.file_name())
-
-        return True
-
-class OpenGistInBrowser(sublime_plugin.TextCommand):
+class OpenGistInBrowser(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
-        self.settings = util.get_settings()
-        gist = Gist(self.settings["token"])
-        filep, _gist = gist.get_gist_by_filename(self.filename)
-        util.open_with_browser(_gist["html_url"])
+        util.open_with_browser(self._gist["html_url"])
 
-    def is_enabled(self):
-        if not self.view or not self.view.file_name(): return False
-
-        base, self.filename = os.path.split(self.view.file_name())
-
-        return True
-
-class DeleteGist(sublime_plugin.TextCommand):
+class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
-        self.settings = util.get_settings()
-        gist = Gist(self.settings["token"])
-        filep, _gist = gist.get_gist_by_filename(self.filename)
-
-        res = gist.delete(_gist["url"])
-        if res.status_code < 399:
-            view = util.get_view_by_file_name(self.file_name)
-            if view:
-                sublime.active_window().focus_view(view)
-                sublime.active_window().run_command("close")
-            os.remove(self.file_name)
-            Printer.get("log").write("%s delete succeed" % self.filename)
-        else:
-            print (res.json())
-            Printer.get("error").write("%s delete failed, due to " % (self.filename, str(res.content)))
-
-    def is_enabled(self):
-        if not self.view or not self.view.file_name(): return False
-        self.file_name = self.view.file_name()
-        base, self.filename = os.path.split(self.file_name)
-
-        return True
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.delete, args=(self._gist["url"], ))
+        thread.start()
+        ThreadProgress(api, thread, 'Deleting Gist %s' % self.filename, 
+            callback.delete_gist, _callback_options = {
+                "file_full_name": self.file_full_name
+            }
+        )

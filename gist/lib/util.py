@@ -9,16 +9,12 @@ def add_gists_to_cache(gists):
     settings = get_settings()
     outputdir = os.path.join(settings["workspace"], ".cache")
     cachedir = os.path.join(outputdir, "gists.json")
-    
-    caches = []
-    if os.path.isfile(cachedir) and len(gists) == 1:
-        caches = json.loads(open(cachedir).read())
-    elif not os.path.exists(outputdir):
-        os.makedirs(outputdir)
-    caches.extend(gists)
 
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+        
     with open(outputdir + "/gists.json", "w") as fp:
-        fp.write(json.dumps(caches, indent=4))
+        fp.write(json.dumps(gists, indent=4))
 
 def get_settings():
     """ Load settings from sublime-settings"""
@@ -49,6 +45,12 @@ def open_with_browser(show_url, use_default_chrome=True):
     else:
         webbrowser.register('chrome', None, webbrowser.BackgroundBrowser(browser_path))
         webbrowser.get('chrome').open_new_tab(show_url)
+
+def close_view_by_filename(file_name):
+    view = get_view_by_file_name(file_name)
+    if view:
+        sublime.active_window().focus_view(view)
+        sublime.active_window().run_command("close")
 
 def get_view_by_name(view_name):
     """Get view by view name

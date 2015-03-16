@@ -1,3 +1,19 @@
+.. :changelog:
+
+Release History
+
+---------------
+
+
+0.0.9 (2015-03-16)
+++++++++++++++++++
+* Add new ``rename_gist`` command
+* Add new ``about`` command
+* Add new ``release_note`` command
+* Add thread process for gist list
+* Reload gist cache after create, delete or rename operation on gist
+
+
 0.0.8 (2015-03-16)
 ++++++++++++++++++
 * Add requests dependencies, if not package control 3, just use the build-in requests

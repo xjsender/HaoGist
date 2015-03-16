@@ -4,11 +4,14 @@
     {"caption": "HaoGist: Create Private Gist", "command": "create_gist", "args": {"public": false}},
     {"caption": "HaoGist: Update Gist", "command": "update_gist"},
     {"caption": "HaoGist: Refresh Gist", "command": "refresh_gist"},
+    {"caption": "HaoGist: Rename Gist", "command": "rename_gist"},
     {"caption": "HaoGist: Delete Gist", "command": "delete_gist"},
     {"caption": "HaoGist: Clear Gist Cache", "command": "clear_gist_cache"},
     {"caption": "HaoGist: Reload Gist Cache", "command": "reload_gist_cache"},
     {"caption": "HaoGist: Refresh Gist Workspace", "command": "refresh_gist_workspace"},
     {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"},
+    {"caption": "HaoGist: About", "command": "about"},
+    {"caption": "HaoGist: Release Note", "command": "release_note"},
     {"caption": "HaoGist: Settings – Default", "command": "open_file", 
         "args": {
             "file": "${packages}/HaoGist/config/settings/HaoGist.sublime-settings"

@@ -53,8 +53,11 @@ class ReloadGistCache(sublime_plugin.WindowCommand):
     def run(self):
         settings = util.get_settings()
         api = GistApi(settings["token"])
-        gists = api.list(force=True)
-        util.add_gists_to_cache(gists)
+        thread = threading.Thread(target=api.list, args=(True, ))
+        thread.start()
+        ThreadProgress(api, thread, 'Reloading Gist Cache', 
+            callback.add_gists_to_cache, _callback_options={}
+        )
 
 class ClearGistCache(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
@@ -76,9 +79,10 @@ class OpenGist(sublime_plugin.WindowCommand):
     def run(self):
         self.settings = util.get_settings()
         api = GistApi(self.settings["token"])
-        _gists = api.list()
+        _gists = res = api.list()
 
         # Keep the gists to cache
+        if not isinstance(_gists, list): _gists = _gists.json()
         util.add_gists_to_cache(_gists)
 
         # Show the filenames in the quick panel
@@ -153,6 +157,43 @@ class CreateGist(sublime_plugin.TextCommand):
 
         return True
 
+class RenameGist(BaseGistView, sublime_plugin.TextCommand):
+    def run(self, edit):
+        self.old_filename = self.filename
+        sublime.active_window().show_input_panel('Input New Name:', 
+            self.old_filename, self.on_input_name, None, None)
+
+    def on_input_name(self, input):
+        if not input: 
+            sublime.error_message("File name can't be empty")
+            return
+
+        self.new_filename = input
+
+        body = open(self.view.file_name(), encoding="utf-8").read()
+        data = {
+            "files": {
+                self.old_filename: {
+                    "filename": self.new_filename,
+                    "content": body
+                }
+            }
+        }
+
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
+        thread.start()
+        ThreadProgress(api, thread, 'Renaming Gist from %s to %s' % (
+                self.old_filename, 
+                self.new_filename
+            ),
+            callback.rename_gist, _callback_options={
+                "old_filename": self.old_filename,
+                "new_filename": self.new_filename,
+                "file_full_name": self.file_full_name
+            }
+        )
+
 class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
         body = open(self.view.file_name(), encoding="utf-8").read()
@@ -184,10 +225,6 @@ class RefreshGist(BaseGistView, sublime_plugin.TextCommand):
             }
         )
 
-class OpenGistInBrowser(BaseGistView, sublime_plugin.TextCommand):
-    def run(self, edit):
-        util.open_with_browser(self._gist["html_url"])
-
 class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
         api = GistApi(self.settings["token"])
@@ -198,3 +235,22 @@ class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
                 "file_full_name": self.file_full_name
             }
         )
+
+class OpenGistInBrowser(BaseGistView, sublime_plugin.TextCommand):
+    def run(self, edit):
+        util.open_with_browser(self._gist["html_url"])
+
+class ReleaseNote(sublime_plugin.WindowCommand):
+    def __init__(self, *args, **kwargs):
+        super(ReleaseNote, self).__init__(*args, **kwargs)
+
+    def run(self):
+        util.open_with_browser("https://github.com/xjsender/HaoGist/blob/master/HISTORY.rst")
+
+class About(sublime_plugin.WindowCommand):
+    def __init__(self, *args, **kwargs):
+        super(About, self).__init__(*args, **kwargs)
+
+    def run(self):
+        util.open_with_browser("https://github.com/xjsender/HaoGist")
+

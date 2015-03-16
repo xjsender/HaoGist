@@ -1,6 +1,10 @@
 import os
 import json
-import requests
+
+try:
+    import requests
+except:
+    from .. import requests
 
 from .lib import util
 

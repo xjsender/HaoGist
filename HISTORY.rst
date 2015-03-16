@@ -1,3 +1,8 @@
+0.0.8 (2015-03-16)
+++++++++++++++++++
+* Add requests dependencies, if not package control 3, just use the build-in requests
+
+
 0.0.7 (2015-03-15)
 ++++++++++++++++++
 * Add thread progress for ``open_gist``

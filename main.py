@@ -1,7 +1,6 @@
 import sublime, sublime_plugin
 import os
 import json
-import requests
 import threading
 
 from .gist.api import GistApi

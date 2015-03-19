@@ -66,9 +66,8 @@ class Printer(object):
         self.show_panel() 
         
         # Append message to panel
-        panel_message = message + "\n" if not prefix else "[%s] [%s] %s\n" % (
+        panel_message = message + "\n" if not prefix else "[%s] %s\n" % (
             time.strftime("%Y.%m.%d %H:%M:%S", time.localtime(time.time())), 
-            self.name.upper(),
             message
         )
 

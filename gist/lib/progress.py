@@ -1,4 +1,5 @@
 import sublime
+from .panel import Printer
 
 
 class ThreadProgress():
@@ -30,13 +31,17 @@ class ThreadProgress():
                 return
 
             res = self.api.res
-            if not res or res.status_code > 399:
+            if not res:
+                Printer.get("log").write("Connection timeout, please check your network")
+                return
+
+            if res.status_code > 399:
                 print (res.text)
                 return
 
             # Invoke _callback
             self._callback(res, self._callback_options)
-                
+
             return
 
         before = i % self.size

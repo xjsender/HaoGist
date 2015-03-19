@@ -10,7 +10,7 @@
     {"caption": "HaoGist: Reload Gist Cache", "command": "reload_gist_cache"},
     {"caption": "HaoGist: Refresh Gist Workspace", "command": "refresh_gist_workspace"},
     {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"},
-    {"caption": "HaoGist: About", "command": "about"},
+    {"caption": "HaoGist: About", "command": "about_hao_gist"},
     {"caption": "HaoGist: Release Note", "command": "release_note"},
     {"caption": "HaoGist: Settings – Default", "command": "open_file", 
         "args": {

@@ -41,6 +41,7 @@ class GistApi(object):
     def retrieve(self, raw_url):
         self.headers["Accept"] = "application/text"
         self.res = requests.get(raw_url, headers=self.headers)
+        self.res.encoding = "utf-8"
         return self.res
 
     def post(self, post_url, params):

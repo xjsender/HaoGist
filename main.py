@@ -32,6 +32,7 @@ class BaseGistView(object):
             for key, value in g["files"].items():
                 if key == self.filename:
                     self.filep, self._gist = g["files"][key], g
+                    break
 
         # If not exists, just disable command
         if not self._gist: return False
@@ -247,9 +248,9 @@ class ReleaseNote(sublime_plugin.WindowCommand):
     def run(self):
         util.open_with_browser("https://github.com/xjsender/HaoGist/blob/master/HISTORY.rst")
 
-class About(sublime_plugin.WindowCommand):
+class AboutHaoGist(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
-        super(About, self).__init__(*args, **kwargs)
+        super(AboutHaoGist, self).__init__(*args, **kwargs)
 
     def run(self):
         util.open_with_browser("https://github.com/xjsender/HaoGist")

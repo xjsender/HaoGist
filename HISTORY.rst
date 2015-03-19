@@ -5,6 +5,12 @@ Release History
 ---------------
 
 
+0.1.0 (2015-03-18)
+++++++++++++++++++
+* Add exception catch for network connection exception
+* Rename ``about`` command to ``about_hao_gist`` in order to prevent conflict with other plugin
+
+
 0.0.9 (2015-03-16)
 ++++++++++++++++++
 * Add new ``rename_gist`` command

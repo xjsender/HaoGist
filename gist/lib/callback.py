@@ -27,7 +27,6 @@ def open_gist(res, options):
     # Show workspace in the sidebar
     util.show_workspace_in_sidebar(settings)
 
-    res.encoding = "utf-8"
     file_full_name = os.path.join(workspace, filename)
     with open(file_full_name, "wb") as fp:
         fp.write(res.text.encode("utf-8"))

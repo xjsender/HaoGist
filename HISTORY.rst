@@ -5,6 +5,12 @@ Release History
 ---------------
 
 
+0.1.1 (2015-03-20)
+++++++++++++++++++
+* Add a new command ``update_gist_description`` to update gist description
+* Update README.MD
+
+
 0.1.0 (2015-03-18)
 ++++++++++++++++++
 * Add exception catch for network connection exception

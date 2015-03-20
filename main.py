@@ -195,6 +195,38 @@ class RenameGist(BaseGistView, sublime_plugin.TextCommand):
             }
         )
 
+class UpdateGistDescription(BaseGistView, sublime_plugin.TextCommand):
+    def run(self, edit):
+        sublime.active_window().show_input_panel('Input New Description:', 
+            "", self.on_input_name, None, None)
+
+    def on_input_name(self, input):
+        if not input: 
+            sublime.error_message("File Description can't be empty")
+            return
+
+        self.desc = input
+
+        body = open(self.view.file_name(), encoding="utf-8").read()
+        data = {
+            "description": self.desc,
+            "files": {
+                self.filename: {
+                    "content": body
+                }
+            }
+        }
+
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
+        thread.start()
+        ThreadProgress(api, thread, 'Update Gist Description',
+            callback.update_description, _callback_options={
+                "file_full_name": self.file_full_name,
+                "desc": self.desc
+            }
+        )
+
 class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
         body = open(self.view.file_name(), encoding="utf-8").read()

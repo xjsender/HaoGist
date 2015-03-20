@@ -5,6 +5,7 @@
     {"caption": "HaoGist: Update Gist", "command": "update_gist"},
     {"caption": "HaoGist: Refresh Gist", "command": "refresh_gist"},
     {"caption": "HaoGist: Rename Gist", "command": "rename_gist"},
+    {"caption": "HaoGist: Update Gist Description", "command": "update_gist_description"},
     {"caption": "HaoGist: Delete Gist", "command": "delete_gist"},
     {"caption": "HaoGist: Clear Gist Cache", "command": "clear_gist_cache"},
     {"caption": "HaoGist: Reload Gist Cache", "command": "reload_gist_cache"},

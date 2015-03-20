@@ -10,6 +10,9 @@ This plugin is hosted on [package control](https://sublime.wbond.net/packages/Ha
 * User setting sample:
 ```javascript
 {
+    // OSX workspace is different with windows,
+    // In OSX, workspace should be:
+    // "/Users/<UserName>/workspace/gist-workspace"
     "workspace": "c:/workspace/gist-workspace",
     "token": ""
 }
@@ -25,6 +28,24 @@ This plugin is hosted on [package control](https://sublime.wbond.net/packages/Ha
 ```bash
 curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
 ```
+
+### How to use this plugin to CRUD on gist:
+Open your command palette, input ```HaoGist: ```, you will see kinds of gist 
+commands as below.
+
+* refresh_gist_workspace
+* reload_gist_cache
+* clear_gist_cache
+* open_gist
+* create_gist
+* rename_gist
+* update_gist
+* update_gist_description
+* refresh_gist
+* delete_gist
+* open_gist_in_browser
+* release_note
+* about_hao_gist
 
 # Dependency Lib
 + [requests](https://github.com/kennethreitz/requests)

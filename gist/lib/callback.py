@@ -107,6 +107,18 @@ def rename_gist(res, options):
     # Reload gist cache
     sublime.active_window().run_command('reload_gist_cache')
 
+def update_description(res, options):
+    file_full_name = options["file_full_name"]
+    base, filename = os.path.split(file_full_name)
+    desc = options["desc"]
+
+    show_message("Description of %s is changed to %s successfully" % (
+        filename, desc
+    ))
+
+    # Reload gist cache
+    sublime.active_window().run_command('reload_gist_cache')
+
 def add_gists_to_cache(res, options):
     util.add_gists_to_cache(res.json())
 

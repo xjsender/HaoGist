@@ -31,6 +31,7 @@ class ThreadProgress():
                 return
 
             res = self.api.res
+            print (res.text)
             if not res:
                 Printer.get("log").write("Connection timeout, please check your network")
                 return

@@ -10,7 +10,7 @@
     "default_chrome_path": "",
 
     // Delay seconds for hiding panel
-    "delay_seconds_for_hiding_panel": 1,
+    "delay_seconds_for_hiding_panel": 1.5,
 
     // Files not shown in the sidebar and Command Palette
     "file_exclude_patterns": [],

@@ -3,6 +3,11 @@ import os
 import json
 import webbrowser
 
+def get_gists_cache(settings):
+    cache_dir = os.path.join(settings["workspace"], ".cache", "gists.json")
+    if not os.path.isfile(cache_dir): return
+    return json.loads(open(cache_dir).read())
+
 def add_gists_to_cache(gists):
     """Add gist the caches"""
     

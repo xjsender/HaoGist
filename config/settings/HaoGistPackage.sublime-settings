@@ -1,6 +1,6 @@
 {
     "name": "HaoGist",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "HaoGist is sublime plugin for CRUD on Github gist",
     "author": "Hao Liu",
     "email": "mouse.mliu@gmail.com",

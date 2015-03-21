@@ -5,6 +5,12 @@ Release History
 ---------------
 
 
+0.1.2 (2015-03-21)
+++++++++++++++++++
+* Add thread progress for ``list_gist`` part of ``open_gist``
+* Correct progress message for ``create_gist``
+
+
 0.1.1 (2015-03-20)
 ++++++++++++++++++
 * Add a new command ``update_gist_description`` to update gist description

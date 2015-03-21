@@ -24,14 +24,8 @@ class GistApi(object):
     def list(self, force=False):
         """Return a list of Gist objects."""
 
-        # Read cache
-        settings = util.get_settings()
-        cache_dir = os.path.join(settings["workspace"], ".cache", "gists.json")
-        if not force and os.path.isfile(cache_dir):
-            return json.loads(open(cache_dir).read())
-
-        # If no cache, just request server
-        self.res = requests.get(GIST_BASE_URL % "gists", headers=self.headers)
+        self.res = requests.get(GIST_BASE_URL % "gists", 
+            headers=self.headers)
         return self.res
 
     def get(self, url):

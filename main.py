@@ -80,10 +80,23 @@ class OpenGist(sublime_plugin.WindowCommand):
     def run(self):
         self.settings = util.get_settings()
         api = GistApi(self.settings["token"])
-        _gists = res = api.list()
+        
+        _gists = util.get_gists_cache(self.settings)
+        if _gists: return self.choose_gist(_gists)
 
+        # If there is no cache
+        thread = threading.Thread(target=api.list)
+        thread.start()
+        ThreadProgress(api, thread, 'List All Gist', 
+            self.choose_gist, _callback_options={}
+        )
+
+    def choose_gist(self, res, options={}):
         # Keep the gists to cache
-        if not isinstance(_gists, list): _gists = _gists.json()
+        if not isinstance(res, list): 
+            _gists = res.json()
+        else:
+            _gists = res
         util.add_gists_to_cache(_gists)
 
         # Show the filenames in the quick panel
@@ -92,8 +105,8 @@ class OpenGist(sublime_plugin.WindowCommand):
         for _gist in _gists:
             for key, value in _gist["files"].items():
                 description = _gist["description"]
-                self.files.append([key, description if description else ""])
-                self.files_settings[key] = value
+                self.files.append(["%s" % (key), description if description else ""])
+                self.files_settings["%s" % (key)] = value
 
         self.files = sorted(self.files)
         self.window.show_quick_panel(self.files, self.on_done)
@@ -140,7 +153,7 @@ class CreateGist(sublime_plugin.TextCommand):
         api = GistApi(self.settings["token"])
         thread = threading.Thread(target=api.post, args=(post_url, data, ))
         thread.start()
-        ThreadProgress(api, thread, 'Refreshing Gist %s' % self.filename, 
+        ThreadProgress(api, thread, 'Creating Gist %s' % self.filename, 
             callback.create_gist, _callback_options={
                 "filename": self.filename,
                 "content": self.content

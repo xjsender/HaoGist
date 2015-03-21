@@ -5,6 +5,12 @@ Release History
 ---------------
 
 
+0.1.3 (2015-03-22)
+++++++++++++++++++
+* Catch requests request exception
+* Add a new settings ``debug_mode`` to control whether output debug message
+
+
 0.1.2 (2015-03-21)
 ++++++++++++++++++
 * Add thread progress for ``list_gist`` part of ``open_gist``

@@ -16,6 +16,7 @@ class GistApi(object):
     def __init__(self, token):
         self.res = None
         self._token = token
+        self.settings = util.get_settings()
         self.headers = {
             "Accept": "application/json",
             "Authorization": "token %s" % self._token
@@ -24,35 +25,64 @@ class GistApi(object):
     def list(self, force=False):
         """Return a list of Gist objects."""
 
-        self.res = requests.get(GIST_BASE_URL % "gists", 
-            headers=self.headers)
+        try:
+            self.res = requests.get(GIST_BASE_URL % "gists", 
+                headers=self.headers)
+        except requests.exceptions.RequestException as e:
+            if self.settings["debug_mode"]:
+                print ("requests request exception: " + str(e))
+            return
         return self.res
 
     def get(self, url):
-        self.res = requests.get(url, headers=self.headers)
+        try:
+            self.res = requests.get(url, headers=self.headers)
+        except requests.exceptions.RequestException as e:
+            if self.settings["debug_mode"]:
+                print ("requests request exception: " + str(e))
+            return
         return self.res
 
     def retrieve(self, raw_url):
         self.headers["Accept"] = "application/text"
-        self.res = requests.get(raw_url, headers=self.headers)
-        self.res.encoding = "utf-8"
+        try:
+            self.res = requests.get(raw_url, headers=self.headers)
+            self.res.encoding = "utf-8"
+        except requests.exceptions.RequestException as e:
+            if self.settings["debug_mode"]:
+                print ("requests request exception: " + str(e))
+            return
         return self.res
 
     def post(self, post_url, params):
         """POST to the web form"""
         
-        print (params)
-        self.res = requests.post(post_url, data=json.dumps(params), 
-            headers=self.headers)
+        try:
+            self.res = requests.post(post_url, data=json.dumps(params), 
+                headers=self.headers)
+        except requests.exceptions.RequestException as e:
+            if self.settings["debug_mode"]:
+                print ("requests request exception: " + str(e))
+            return
         return self.res
 
     def patch(self, patch_url, params):
         """POST to the web form"""
 
-        self.res = requests.patch(patch_url, data=json.dumps(params), 
-            headers=self.headers)
+        try:
+            self.res = requests.patch(patch_url, data=json.dumps(params), 
+                headers=self.headers)
+        except requests.exceptions.RequestException as e:
+            if self.settings["debug_mode"]:
+                print ("requests request exception: " + str(e))
+            return
         return self.res
 
     def delete(self, url):
-        self.res = requests.delete(url, headers=self.headers)
+        try:
+            self.res = requests.delete(url, headers=self.headers)
+        except requests.exceptions.RequestException as e:
+            if self.settings["debug_mode"]:
+                print ("requests request exception: " + str(e))
+            return
         return self.res

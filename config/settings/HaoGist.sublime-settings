@@ -12,6 +12,9 @@
     // Delay seconds for hiding panel
     "delay_seconds_for_hiding_panel": 1.5,
 
+    // Update gist on save
+    "auto_update_on_save": true,
+
     // If set to true, debug message will be output to console
     "debug_mode": false,
 
@@ -20,6 +23,6 @@
 
     // Folders not shown in the sidebar and Command Palette
     "folder_exclude_patterns": [
-        ".cache"
+        // ".cache"
     ],
 }

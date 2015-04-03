@@ -5,6 +5,11 @@ Release History
 ---------------
 
 
+0.1.4 (2015-04-04)
+++++++++++++++++++
+* Deliver enhancement for issue #1
+
+
 0.1.3 (2015-03-22)
 ++++++++++++++++++
 * Catch requests request exception

@@ -39,6 +39,13 @@ class BaseGistView(object):
 
         return True
 
+class HaoGistEvent(sublime_plugin.EventListener):
+    def on_post_save_async(self, view):
+        settings = util.get_settings();
+        if settings["workspace"] not in view.file_name(): return
+        if settings.get('auto_update_on_save'):
+            view.run_command('update_gist')
+
 class RefreshGistWorkspace(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
         super(RefreshGistWorkspace, self).__init__(*args, **kwargs)

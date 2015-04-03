@@ -30,6 +30,7 @@ def get_settings():
     settings["workspace"] = s.get("workspace")
     settings["file_exclude_patterns"] = s.get("file_exclude_patterns", {})
     settings["debug_mode"] = s.get("debug_mode", False)
+    settings["auto_update_on_save"] = s.get("auto_update_on_save", True)
     settings["folder_exclude_patterns"] = s.get("folder_exclude_patterns", [])
     settings["default_chrome_path"] = s.get("default_chrome_path", "")
     settings["delay_seconds_for_hiding_panel"] = s.get("delay_seconds_for_hiding_panel", 1)

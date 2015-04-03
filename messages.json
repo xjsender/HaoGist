@@ -1,15 +1,8 @@
 {
-    "0.0.2": "config/messages/0.0.2.md",
-    "0.0.3": "config/messages/0.0.3.md",
-    "0.0.4": "config/messages/0.0.4.md",
-    "0.0.5": "config/messages/0.0.5.md",
-    "0.0.6": "config/messages/0.0.6.md",
-    "0.0.7": "config/messages/0.0.7.md",
-    "0.0.8": "config/messages/0.0.8.md",
-    "0.0.9": "config/messages/0.0.9.md",
     "0.1.0": "config/messages/0.1.0.md",
     "0.1.1": "config/messages/0.1.1.md",
     "0.1.2": "config/messages/0.1.2.md",
     "0.1.3": "config/messages/0.1.3.md",
+    "0.1.4": "config/messages/0.1.4.md",
     "install": "config/messages/install.md"
 }

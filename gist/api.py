@@ -26,7 +26,10 @@ class GistApi(object):
         """Return a list of Gist objects."""
 
         try:
-            self.res = requests.get(GIST_BASE_URL % "gists", 
+            # https://github.com/sanusart/gists-backup/blob/master/bkp.js#L25
+            # If we don't add the per_page parameter, we can't get all gists
+            # However, this is not mentioned in the gist API document
+            self.res = requests.get(GIST_BASE_URL % "gists?per_page=1000", 
                 headers=self.headers)
         except requests.exceptions.RequestException as e:
             if self.settings["debug_mode"]:

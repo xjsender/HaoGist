@@ -64,7 +64,9 @@ class ReloadGistCache(sublime_plugin.WindowCommand):
         thread = threading.Thread(target=api.list, args=(True, ))
         thread.start()
         ThreadProgress(api, thread, 'Reloading Gist Cache', 
-            callback.add_gists_to_cache, _callback_options={}
+            callback.add_gists_to_cache, _callback_options={
+                "show_message": True
+            }
         )
 
 class ClearGistCache(sublime_plugin.WindowCommand):

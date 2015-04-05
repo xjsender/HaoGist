@@ -30,7 +30,9 @@ curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"sco
 ```
 
 ### How to use this plugin to CRUD on gist:
-Open your command palette, input ```HaoGist: ```, you will see kinds of gist 
+
+#### Command Palette
+Open your command palette, input ```HaoGist: ```, you will see gist 
 commands as below.
 
 * refresh_gist_workspace
@@ -46,6 +48,9 @@ commands as below.
 * open_gist_in_browser
 * release_note
 * about_hao_gist
+
+#### Context Menu
+Open your context menu in any open view, you will see the commands of this plugin
 
 # Dependency Lib
 + [requests](https://github.com/kennethreitz/requests)

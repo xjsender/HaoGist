@@ -1,0 +1,52 @@
+[
+    { "caption": "-" },
+    {
+        "caption": "HaoGist",
+        "children":
+        [
+            {"caption": "Open Gist", "command": "open_gist"},
+            {"caption": "Open Gist in Browser", "command": "open_gist_in_browser"},
+
+            {"caption": "-"},
+
+            {"caption": "Create Public Gist", "command": "create_gist", "args": {"public": true}},
+            {"caption": "Create Private Gist", "command": "create_gist", "args": {"public": false}},
+
+            {"caption": "-"},
+
+            {"caption": "Update Gist", "command": "update_gist"},
+            {"caption": "Refresh Gist", "command": "refresh_gist"},
+            {"caption": "Rename Gist", "command": "rename_gist"},
+            {"caption": "Delete Gist", "command": "delete_gist"},
+            {"caption": "Update Gist Description", "command": "update_gist_description"},
+            
+            {"caption": "-"},
+
+            {"caption": "Clear Gist Cache", "command": "clear_gist_cache"},
+            {"caption": "Reload Gist Cache", "command": "reload_gist_cache"},
+            {"caption": "Refresh Gist Workspace", "command": "refresh_gist_workspace"},
+
+            {"caption": "-"},
+
+            {"caption": "Settings", "children": [
+                {"caption": "Settings – Default", "command": "open_file", 
+                    "args": {
+                        "file": "${packages}/HaoGist/config/settings/HaoGist.sublime-settings"
+                    }
+                },
+                {"caption": "Settings – User", "command": "open_file", 
+                    "args": {
+                        "file": "${packages}/User/HaoGist.sublime-settings"
+                    }
+                }
+            ]},
+
+            {"caption": "-"},
+            
+            {"caption": "Release Note", "command": "release_note"},
+
+            {"caption": "About", "command": "about_hao_gist"},
+        ]
+    },
+    { "caption": "-" }
+]

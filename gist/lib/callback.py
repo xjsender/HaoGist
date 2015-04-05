@@ -122,6 +122,9 @@ def update_description(res, options):
 def add_gists_to_cache(res, options):
     util.add_gists_to_cache(res.json())
 
+    if "show_message" in options and options["show_message"]:
+        show_message("Gists cache reloading succeed")
+
 def show_message(msg):
     settings = util.get_settings()
     Printer.get("log").write(msg)

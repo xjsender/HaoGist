@@ -31,6 +31,7 @@ def get_settings():
     settings["file_exclude_patterns"] = s.get("file_exclude_patterns", {})
     settings["debug_mode"] = s.get("debug_mode", False)
     settings["auto_update_on_save"] = s.get("auto_update_on_save", True)
+    settings["hide_workspace_in_sidebar"] = s.get("hide_workspace_in_sidebar", False)
     settings["folder_exclude_patterns"] = s.get("folder_exclude_patterns", [])
     settings["default_chrome_path"] = s.get("default_chrome_path", "")
     settings["delay_seconds_for_hiding_panel"] = s.get("delay_seconds_for_hiding_panel", 1)
@@ -119,6 +120,9 @@ def show_workspace_in_sidebar(settings):
     """Add new project folder to workspace
        Just Sublime Text 3 can support this method
     """
+
+    # Don't show the workspace in the sidebar
+    if settings["hide_workspace_in_sidebar"]: return
 
     # Just ST3 supports, ST2 is not
     workspace = settings["workspace"]

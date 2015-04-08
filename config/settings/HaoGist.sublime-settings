@@ -18,6 +18,9 @@
     // If set to true, debug message will be output to console
     "debug_mode": false,
 
+    // Disable the feature that adds gist folder to sidebar
+    "hide_workspace_in_sidebar": true,
+
     // Files not shown in the sidebar and Command Palette
     "file_exclude_patterns": [],
 

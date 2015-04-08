@@ -54,6 +54,11 @@ class RefreshGistWorkspace(sublime_plugin.WindowCommand):
         settings = util.get_settings()
         util.show_workspace_in_sidebar(settings)
 
+    def is_visible(self):
+        self.settings = util.get_settings()
+
+        return not self.settings["hide_workspace_in_sidebar"]
+
 class ReloadGistCache(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
         super(ReloadGistCache, self).__init__(*args, **kwargs)

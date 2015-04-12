@@ -2,17 +2,20 @@
 As you know, there already has a <a href="https://github.com/condemil/Gist">sublime gist plugin</a>, however, there is no cache handler and it seems the author already stop to develop on it, so I decide to develop this gist plugin.
 
 ## Installation
-This plugin is hosted on [package control](https://sublime.wbond.net/packages/HaoGist), you should upgrade package control to v3.0, because just v3.0 support dependencies.json feature.
+This plugin is hosted on [package control](https://sublime.wbond.net/packages/HaoGist)
+
+You should upgrade package control to v3.0, because just v3.0 support dependencies.json feature, if you didn't do it, plugin will use the build-in requests.
 
 ## Configuration
-* After plugin is installed, you should set your own gist workspace in your user settings, you can open this settings file by entering ```HaoGist: Settings User``` in the command palette.
+* After plugin is installed, you **must** set your gist token, you can open this settings file by entering ```HaoGist: Settings User``` in the command palette.
 
 * User setting sample:
 ```javascript
 {
     // OSX workspace is different with windows,
-    // In OSX, workspace should be:
+    // In OSX, workspace should be: 
     // "/Users/<UserName>/workspace/gist-workspace"
+    // If workspace is empty, it will be set as {packages_path}/User/HaoGist
     "workspace": "c:/workspace/gist-workspace",
     "token": ""
 }
@@ -24,10 +27,8 @@ This plugin is hosted on [package control](https://sublime.wbond.net/packages/Ha
 
 ### How to get gist token?
 * [Via Web](https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
-* Via curl
-```bash
-curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
-```
+* Via curl:
+    - curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
 
 ### How to use this plugin to CRUD on gist:
 

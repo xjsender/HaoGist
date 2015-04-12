@@ -33,22 +33,20 @@ You should upgrade package control to v3.0, because just v3.0 support dependenci
 ### How to use this plugin to CRUD on gist:
 
 #### Command Palette
-Open your command palette, input ```HaoGist: ```, you will see gist 
-commands as below.
-
-* refresh_gist_workspace
-* reload_gist_cache
-* clear_gist_cache
-* open_gist
-* create_gist
-* rename_gist
-* update_gist
-* update_gist_description
-* refresh_gist
-* delete_gist
-* open_gist_in_browser
-* release_note
-* about_hao_gist
+* Input ```HaoGist: ``` in command palette, you will see gist commands
+    - refresh_gist_workspace
+    - reload_gist_cache
+    - clear_gist_cache
+    - open_gist
+    - create_gist
+    - rename_gist
+    - update_gist
+    - update_gist_description
+    - refresh_gist
+    - delete_gist
+    - open_gist_in_browser
+    - release_note
+    - about_hao_gist
 
 #### Context Menu
 Open your context menu in any open view, you will see the commands of this plugin

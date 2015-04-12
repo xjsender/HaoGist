@@ -5,6 +5,13 @@ Release History
 ---------------
 
 
+0.1.8 (2015-04-12)
+++++++++++++++++++
+* Remove ``file_exclude_patterns`` setting
+* Remove ``folder_exclude_patterns`` setting
+* ``workspace`` setting can be empty, if it is empty, workspace will be set as {packages_path}/User/HaoGist
+
+
 0.1.7 (2015-04-08)
 ++++++++++++++++++
 * Deliver issue #2 for hiding workspace in sidebar

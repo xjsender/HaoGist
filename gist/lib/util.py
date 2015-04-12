@@ -27,14 +27,17 @@ def get_settings():
     settings = {}
     s = sublime.load_settings("HaoGist.sublime-settings")
     settings["token"] = s.get("token")
-    settings["workspace"] = s.get("workspace")
-    settings["file_exclude_patterns"] = s.get("file_exclude_patterns", {})
     settings["debug_mode"] = s.get("debug_mode", False)
     settings["auto_update_on_save"] = s.get("auto_update_on_save", True)
     settings["hide_workspace_in_sidebar"] = s.get("hide_workspace_in_sidebar", False)
-    settings["folder_exclude_patterns"] = s.get("folder_exclude_patterns", [])
     settings["default_chrome_path"] = s.get("default_chrome_path", "")
     settings["delay_seconds_for_hiding_panel"] = s.get("delay_seconds_for_hiding_panel", 1)
+
+    # If user didn't set the workspace
+    workspace = s.get("workspace")
+    if not workspace: 
+        workspace = os.path.join(sublime.packages_path(), "User", "HaoGist")
+    settings["workspace"] = workspace
 
     return settings
 
@@ -126,8 +129,6 @@ def show_workspace_in_sidebar(settings):
 
     # Just ST3 supports, ST2 is not
     workspace = settings["workspace"]
-    file_exclude_patterns = settings["file_exclude_patterns"]
-    folder_exclude_patterns = settings["folder_exclude_patterns"]
     project_data = sublime.active_window().project_data()
     if not project_data: project_data = {}
     folders = []
@@ -141,21 +142,9 @@ def show_workspace_in_sidebar(settings):
         if "\\" in folder : folder = folder.replace("\\", "/")
         if "\\" in workspace : workspace = workspace.replace("\\", "/")
 
-        if folder["path"] == workspace:
-            folder["file_exclude_patterns"] = file_exclude_patterns;
-            folder["folder_exclude_patterns"] = folder_exclude_patterns
-        else:
-            folders.append({
-                "path": workspace,
-                "file_exclude_patterns": file_exclude_patterns,
-                "folder_exclude_patterns": folder_exclude_patterns
-            })
+        folders.append({"path": workspace})
     else:
-        folders.append({
-            "path": workspace,
-            "file_exclude_patterns": file_exclude_patterns,
-            "folder_exclude_patterns": folder_exclude_patterns
-        })
+        folders.append({"path": workspace})
 
     project_data["folders"] = folders
     sublime.active_window().set_project_data(project_data)

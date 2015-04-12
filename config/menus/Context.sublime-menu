@@ -47,6 +47,5 @@
 
             {"caption": "About", "command": "about_hao_gist"},
         ]
-    },
-    { "caption": "-" }
+    }
 ]

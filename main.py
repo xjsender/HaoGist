@@ -37,6 +37,11 @@ class BaseGistView(object):
         # If not exists, just disable command
         if not self._gist: return False
 
+        self.gist_id = self._gist["id"]
+        self.html_url = self._gist["html_url"]
+        self.gist_url = self._gist["url"]
+        self.raw_url = self.filep["raw_url"]
+
         return True
 
 class HaoGistEvent(sublime_plugin.EventListener):
@@ -63,14 +68,14 @@ class ReloadGistCache(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
         super(ReloadGistCache, self).__init__(*args, **kwargs)
 
-    def run(self):
+    def run(self, show_message=False):
         settings = util.get_settings()
         api = GistApi(settings["token"])
         thread = threading.Thread(target=api.list, args=(True, ))
         thread.start()
         ThreadProgress(api, thread, 'Reloading Gist Cache', 
             callback.add_gists_to_cache, _callback_options={
-                "show_message": True
+                "show_message": show_message
             }
         )
 
@@ -147,10 +152,17 @@ class CreateGist(sublime_plugin.TextCommand):
             '', self.on_input_name, None, None)
 
     def on_input_name(self, filename):
+        if not filename:
+            message = "FileName is required, do you want to try again?"
+            if not sublime.ok_cancel_dialog(message, "Yes?"): return
+            sublime.active_window().show_input_panel("Gist File Name: (Required)", 
+                '', self.on_input_name, None, None)
+            return
+
         self.filename = filename
 
         sublime.active_window().show_input_panel('Gist Description: (optional):', 
-            filename, self.on_input_descrition, None, None)
+            filename.split(".")[0], self.on_input_descrition, None, None)
 
     def on_input_descrition(self, desc):
         post_url = base_url % "gists"
@@ -209,7 +221,7 @@ class RenameGist(BaseGistView, sublime_plugin.TextCommand):
         }
 
         api = GistApi(self.settings["token"])
-        thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
+        thread = threading.Thread(target=api.patch, args=(self.gist_url, data, ))
         thread.start()
         ThreadProgress(api, thread, 'Renaming Gist from %s to %s' % (
                 self.old_filename, 
@@ -245,7 +257,7 @@ class UpdateGistDescription(BaseGistView, sublime_plugin.TextCommand):
         }
 
         api = GistApi(self.settings["token"])
-        thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
+        thread = threading.Thread(target=api.patch, args=(self.gist_url, data, ))
         thread.start()
         ThreadProgress(api, thread, 'Update Gist Description',
             callback.update_description, _callback_options={
@@ -266,7 +278,7 @@ class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
         }
 
         api = GistApi(self.settings["token"])
-        thread = threading.Thread(target=api.patch, args=(self._gist["url"], data, ))
+        thread = threading.Thread(target=api.patch, args=(self.gist_url, data, ))
         thread.start()
         ThreadProgress(api, thread, 'Updating Gist %s' % self.filename, 
             callback.update_gist, _callback_options={
@@ -277,7 +289,7 @@ class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
 class RefreshGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
         api = GistApi(self.settings["token"])
-        thread = threading.Thread(target=api.retrieve, args=(self.filep["raw_url"], ))
+        thread = threading.Thread(target=api.retrieve, args=(self.raw_url, ))
         thread.start()
         ThreadProgress(api, thread, 'Refreshing Gist %s' % self.filename, 
             callback.refresh_gist, _callback_options={
@@ -288,7 +300,7 @@ class RefreshGist(BaseGistView, sublime_plugin.TextCommand):
 class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
         api = GistApi(self.settings["token"])
-        thread = threading.Thread(target=api.delete, args=(self._gist["url"], ))
+        thread = threading.Thread(target=api.delete, args=(self.gist_url, ))
         thread.start()
         ThreadProgress(api, thread, 'Deleting Gist %s' % self.filename, 
             callback.delete_gist, _callback_options={
@@ -298,7 +310,7 @@ class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
 
 class OpenGistInBrowser(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
-        util.open_with_browser(self._gist["html_url"])
+        util.open_with_browser(self.html_url)
 
 class ReleaseNote(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):

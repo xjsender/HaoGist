@@ -7,7 +7,7 @@ After this plugin is installed, you must set your own gist token, if you want to
 How to get gist token?
 * [Via Web](https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
 * Via curl:
-    - curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
+    - curl -v -u xjsender -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
 
 How to use this plugin?
 * Input ```HaoGist: ``` in command palette, you will see gist commands

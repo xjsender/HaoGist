@@ -31,12 +31,15 @@ class ThreadProgress():
                 return
 
             res = self.api.res
-            if not res:
-                Printer.get("log").write("Connection timeout, please check your network")
+            if res == None:
+                Printer.get("log").write("Network connection timeout")
                 return
 
             if res.status_code > 399:
-                print (res.text)
+                result = res.json()
+                if "message" in result:
+                    Printer.get("log").write(result["message"])
+                print (res)
                 return
 
             # Invoke _callback

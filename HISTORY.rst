@@ -5,6 +5,15 @@ Release History
 ---------------
 
 
+0.2.0 (2015-04-20)
+++++++++++++++++++
+* FileName check and add support for trying again when creating gist
+* Fix bug of connection issue checking
+* If token is invalid, display the error message
+* Add ``show_message`` parameter for ``reload_gist_cache``
+* Optimize BaseGistView
+
+
 0.1.8 (2015-04-12)
 ++++++++++++++++++
 * Remove ``file_exclude_patterns`` setting

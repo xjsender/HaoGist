@@ -23,7 +23,12 @@
             {"caption": "-"},
 
             {"caption": "Clear Gist Cache", "command": "clear_gist_cache"},
-            {"caption": "Reload Gist Cache", "command": "reload_gist_cache"},
+            {"caption": "Reload Gist Cache", "command": "reload_gist_cache", 
+                "args": {
+                    "show_message": true
+                }
+            },
+
             {"caption": "Refresh Gist Workspace", "command": "refresh_gist_workspace"},
 
             {"caption": "-"},

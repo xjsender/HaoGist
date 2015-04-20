@@ -28,8 +28,8 @@ You should upgrade package control to v3.0, because just v3.0 support dependenci
 ### How to get gist token?
 * [Via Web](https://help.github.com/articles/creating-an-access-token-for-command-line-use/)
 * Via curl:
-    - curl -v -u **<USERNAME>** -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
-    - **<USERNAME>** must be changed to your own
+    - curl -v -u USERNAME -X POST https://api.github.com/authorizations --data "{\"scopes\":[\"gist\"], \"note\": \"Sublime HaoGist Plugin\"}"
+    - USERNAME must be changed to your own
 
 ### How to use this plugin to CRUD on gist:
 

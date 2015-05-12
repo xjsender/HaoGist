@@ -5,7 +5,7 @@ Release History
 ---------------
 
 
-0.2.0 (2015-04-20)
+0.1.9 (2015-04-20)
 ++++++++++++++++++
 * FileName check and add support for trying again when creating gist
 * Fix bug of connection issue checking

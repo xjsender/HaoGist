@@ -1,5 +1,6 @@
 [
-    {"caption": "HaoGist: Open Gist", "command": "open_gist"},
+    {"caption": "HaoGist: Open Gist", "command": "open_gist", "args": {"read_cache": true}},
+    {"caption": "HaoGist: Open New Gist", "command": "open_gist", "args": {"read_cache": false}},
     {"caption": "HaoGist: Create Public Gist", "command": "create_gist", "args": {"public": true}},
     {"caption": "HaoGist: Create Private Gist", "command": "create_gist", "args": {"public": false}},
     {"caption": "HaoGist: Update Gist", "command": "update_gist"},

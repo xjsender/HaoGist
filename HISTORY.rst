@@ -7,6 +7,11 @@ Release History
 
 0.1.9 (2015-04-20)
 ++++++++++++++++++
+* Add a new command ``Open New Gist``, which is used to read gist list from server but not local cache, because you add a new gist or fork a gist in the server but not add it by this plugin, you need to reload gist cache and then open gist file from local cache, this new command combine these two steps to one.
+
+
+0.1.9 (2015-04-20)
+++++++++++++++++++
 * FileName check and add support for trying again when creating gist
 * Fix bug of connection issue checking
 * If token is invalid, display the error message

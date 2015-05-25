@@ -96,12 +96,14 @@ class OpenGist(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
         super(OpenGist, self).__init__(*args, **kwargs)
 
-    def run(self):
+    def run(self, read_cache=True):
         self.settings = util.get_settings()
         api = GistApi(self.settings["token"])
         
-        _gists = util.get_gists_cache(self.settings)
-        if _gists: return self.choose_gist(_gists)
+        # If read_cache is false, it means read gist list from server
+        if read_cache:
+            _gists = util.get_gists_cache(self.settings)
+            if _gists: return self.choose_gist(_gists)
 
         # If there is no cache
         thread = threading.Thread(target=api.list)

@@ -4,7 +4,8 @@
         "caption": "HaoGist",
         "children":
         [
-            {"caption": "Open Gist", "command": "open_gist"},
+            {"caption": "Open Gist", "command": "open_gist", "args": {"read_cache": true}},
+            {"caption": "Open New Gist", "command": "open_gist", "args": {"read_cache": false}},
             {"caption": "Open Gist in Browser", "command": "open_gist_in_browser"},
 
             {"caption": "-"},

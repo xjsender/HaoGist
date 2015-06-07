@@ -98,6 +98,11 @@ class OpenGist(sublime_plugin.WindowCommand):
 
     def run(self, read_cache=True):
         self.settings = util.get_settings()
+        if not self.settings["token"]:
+            message = "Your own token is empty, please set it by " +\
+                "HaoGist > Settings > User Settings in the context menu"
+            return Printer.get("error").write(message)
+
         api = GistApi(self.settings["token"])
         
         # If read_cache is false, it means read gist list from server

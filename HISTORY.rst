@@ -5,7 +5,13 @@ Release History
 ---------------
 
 
-0.1.9 (2015-04-20)
+0.2.1 (2015-06-07)
+++++++++++++++++++
+* Fix bug: After update gist, refresh all lists to keep gist raw_url to newest
+* Enhancement: Add token required check for ``open_gist`` command
+
+
+0.2.0 (2015-05-25)
 ++++++++++++++++++
 * Add a new command ``Open New Gist``, which is used to read gist list from server but not local cache, because you add a new gist or fork a gist in the server but not add it by this plugin, you need to reload gist cache and then open gist file from local cache, this new command combine these two steps to one.
 

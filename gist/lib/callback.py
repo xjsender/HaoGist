@@ -83,6 +83,9 @@ def update_gist(res, options):
     base, filename = os.path.split(file_full_name)
     show_message("%s is update successfully" % filename)
 
+    # Reload gist cache
+    sublime.active_window().run_command('reload_gist_cache')
+
 def rename_gist(res, options):
     # Get file_full_name
     old_file_full_name = options["file_full_name"]

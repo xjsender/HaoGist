@@ -6,6 +6,9 @@ This plugin is hosted on [package control](https://sublime.wbond.net/packages/Ha
 
 You should upgrade package control to v3.0, because just v3.0 support dependencies.json feature, if you didn't do it, plugin will use the build-in requests.
 
+## Change Logs:
++ <a href="https://github.com/xjsender/HaoGist/blob/master/HISTORY.rst" target="_blank">Change Logs</a>
+
 ## Configuration
 * After plugin is installed, you **must** set your gist token, you can open this settings file by entering ```HaoGist: Settings User``` in the command palette.
 

@@ -36,18 +36,21 @@ def open_gist(res, options):
 
 def delete_gist(res, options):
     # Get file_full_name
-    file_full_name = options["file_full_name"]
-    base, filename = os.path.split(file_full_name)
+    if "file_full_name" in options:
+        file_full_name = options["file_full_name"]
+        base, filename = os.path.split(file_full_name)
 
-    settings = util.get_settings()
+        settings = util.get_settings()
 
-    # Close corresponding view by file full name
-    util.close_view_by_filename(file_full_name)
+        # Close corresponding view by file full name
+        util.close_view_by_filename(file_full_name)
 
-    # Remove file name
-    os.remove(file_full_name)
+        # Remove file name
+        os.remove(file_full_name)
 
-    show_message("%s delete succeed" % filename)
+        show_message("%s delete succeed" % filename)
+    else:
+        show_message("Gist is delete successfully")
 
     # Reload gist cache
     sublime.active_window().run_command('reload_gist_cache')

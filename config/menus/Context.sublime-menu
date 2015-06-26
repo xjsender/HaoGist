@@ -19,6 +19,7 @@
             {"caption": "Refresh Gist", "command": "refresh_gist"},
             {"caption": "Rename Gist", "command": "rename_gist"},
             {"caption": "Delete Gist", "command": "delete_gist"},
+            {"caption": "Delete Gist From List", "command": "delete_gist_from_list"},
             {"caption": "Update Gist Description", "command": "update_gist_description"},
             
             {"caption": "-"},

@@ -275,6 +275,11 @@ class UpdateGistDescription(BaseGistView, sublime_plugin.TextCommand):
 
 class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
+        if self.filename in globals():
+            thread = globals()[self.filename]
+            if thread and thread.is_alive():
+                return
+
         body = open(self.view.file_name(), encoding="utf-8").read()
         data = {
             "files": {
@@ -292,6 +297,8 @@ class UpdateGist(BaseGistView, sublime_plugin.TextCommand):
                 "file_full_name": self.file_full_name
             }
         )
+
+        globals()[self.filename] = thread
 
 class RefreshGist(BaseGistView, sublime_plugin.TextCommand):
     def run(self, edit):
@@ -313,6 +320,61 @@ class DeleteGist(BaseGistView, sublime_plugin.TextCommand):
             callback.delete_gist, _callback_options={
                 "file_full_name": self.file_full_name
             }
+        )
+
+class DeleteGistFromList(sublime_plugin.WindowCommand):
+    def __init__(self, *args, **kwargs):
+        super(DeleteGistFromList, self).__init__(*args, **kwargs)
+
+    def run(self, read_cache=True):
+        self.settings = util.get_settings()
+        if not self.settings["token"]:
+            message = "Your own token is empty, please set it by " +\
+                "HaoGist > Settings > User Settings in the context menu"
+            return Printer.get("error").write(message)
+
+        api = GistApi(self.settings["token"])
+        
+        # If read_cache is false, it means read gist list from server
+        if read_cache:
+            _gists = util.get_gists_cache(self.settings)
+            if _gists: return self.choose_gist(_gists)
+
+        # If there is no cache
+        thread = threading.Thread(target=api.list)
+        thread.start()
+        ThreadProgress(api, thread, 'List All Gist', 
+            self.choose_gist, _callback_options={}
+        )
+
+    def choose_gist(self, res, options={}):
+        # Keep the gists to cache
+        if not isinstance(res, list): 
+            _gists = res.json()
+        else:
+            _gists = res
+
+        # Show the filenames in the quick panel
+        self.files = []
+        self.files_settings = {}
+        for _gist in _gists:
+            for key, value in _gist["files"].items():
+                description = _gist["description"]
+                self.files.append(["%s" % (key), description if description else ""])
+                self.files_settings["%s" % (key)] = _gist
+
+        self.files = sorted(self.files)
+        self.window.show_quick_panel(self.files, self.on_done)
+
+    def on_done(self, index):
+        if index == -1: return
+        gistp = self.files_settings[self.files[index][0]]
+
+        api = GistApi(self.settings["token"])
+        thread = threading.Thread(target=api.delete, args=(gistp["url"], ))
+        thread.start()
+        ThreadProgress(api, thread, 'Deleting Gist', 
+            callback.delete_gist, _callback_options={}
         )
 
 class OpenGistInBrowser(BaseGistView, sublime_plugin.TextCommand):

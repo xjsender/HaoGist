@@ -5,6 +5,12 @@ Release History
 ---------------
 
 
+0.2.2 (2015-06-26)
+++++++++++++++++++
+* Enhancement: prevent duplicate gist update when press ``ctrl+s``
+* Add a new command to delete chosen gist from gist list
+
+
 0.2.1 (2015-06-07)
 ++++++++++++++++++
 * Fix bug: After update gist, refresh all lists to keep gist raw_url to newest

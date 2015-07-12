@@ -4,9 +4,52 @@
         "caption": "HaoGist",
         "children":
         [
-            {"caption": "Open Gist", "command": "open_gist", "args": {"read_cache": true}},
-            {"caption": "Open New Gist", "command": "open_gist", "args": {"read_cache": false}},
-            {"caption": "Open Gist in Browser", "command": "open_gist_in_browser"},
+            {"caption": "Open Gist From Cache", "command": "choose_gist", 
+                "args": {
+                    "callback_command": "open_gist"
+                }
+            },
+
+            {"caption": "Open Gist From Server", "command": "choose_gist", 
+                "args": {
+                    "read_cache": false,
+                    "callback_command": "open_gist"
+                }
+            },
+
+            {"caption": "-"},
+
+            {"caption": "Add File To Gist", "command": "choose_gist", 
+                "args": {
+                    "callback_command": "add_file_to_gist",
+                    "include_files": false
+                }
+            },
+
+            {"caption": "Update To Gist", "command": "choose_gist", 
+                "args": {
+                    "callback_command": "update_content_to_gist"
+                }
+            },
+
+            {"caption": "Delete Exist Gist", "command": "choose_gist", 
+                "args": {
+                    "callback_command": "delete_exist_gist"
+                }
+            },
+
+            {"caption": "Delete File From Gist", "command": "choose_gist", 
+                "args": {
+                    "include_files": false,
+                    "callback_command": "delete_file_from_gist"
+                }
+            },
+
+            {"caption": "Open Gist in Browser", "command": "choose_gist", 
+                "args": {
+                    "callback_command": "open_gist_in_browser"
+                }
+            },
 
             {"caption": "-"},
 
@@ -19,20 +62,14 @@
             {"caption": "Refresh Gist", "command": "refresh_gist"},
             {"caption": "Rename Gist", "command": "rename_gist"},
             {"caption": "Delete Gist", "command": "delete_gist"},
-            {"caption": "Delete Gist From List", "command": "delete_gist_from_list"},
             {"caption": "Update Gist Description", "command": "update_gist_description"},
+            {"caption": "Open Gist in Browser", "command": "open_current_gist_in_browser"},
             
             {"caption": "-"},
 
             {"caption": "Clear Gist Cache", "command": "clear_gist_cache"},
-            {"caption": "Reload Gist Cache", "command": "reload_gist_cache", 
-                "args": {
-                    "show_message": true
-                }
-            },
-
-            {"caption": "Refresh Gist Workspace", "command": "refresh_gist_workspace"},
-
+            {"caption": "Reload Gist Cache", "command": "choose_gist", "args": {"read_cache": false}},
+            
             {"caption": "-"},
 
             {"caption": "Settings", "children": [

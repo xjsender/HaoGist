@@ -5,6 +5,19 @@ Release History
 ---------------
 
 
+0.2.3 (2015-07-11)
+++++++++++++++++++
+* Move events module from main.py to new event.py
+* Rename ``Delete Gist From List`` command to ``Delete Exist Gist``
+* Rename ``Open Gist In Browser`` command to ``Open Current Gist In Browser``
+* Remove command ``Refresh Gist Workspace``,  remove its related setting and statement
+* Add a new command ``Open Gist In Browser`` to open the chosen gist in the selection panel
+* Add a new command ``Update Content To Gist`` to update chosen content or whole file content to exist gist
+* Add a new command ``Add File To Gist`` to add chosen content or whole file content to exist gist
+* Add a new command ``Delete File From Gist`` to add chosen content or whole file content to exist gist
+* Update README.md
+
+
 0.2.2 (2015-06-26)
 ++++++++++++++++++
 * Enhancement: prevent duplicate gist update when press ``ctrl+s``

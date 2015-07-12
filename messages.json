@@ -12,5 +12,6 @@
     "0.2.0": "config/messages/0.2.0.md",
     "0.2.1": "config/messages/0.2.1.md",
     "0.2.2": "config/messages/0.2.2.md",
+    "0.2.3": "config/messages/0.2.3.md",
     "install": "config/messages/install.md"
 }

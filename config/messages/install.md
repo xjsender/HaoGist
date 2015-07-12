@@ -11,17 +11,21 @@ How to get gist token?
 
 How to use this plugin?
 * Input ```HaoGist: ``` in command palette, you will see gist commands
-    - refresh_gist_workspace
-    - reload_gist_cache
-    - clear_gist_cache
+    - choose_gist
     - open_gist
+    - delete_exist_gist
+    - open_gist_in_browser
+    - update_content_to_gist
+    - add_file_to_gist
+    - delete_file_from_gist
     - create_gist
     - rename_gist
-    - update_gist
     - update_gist_description
+    - update_gist
     - refresh_gist
     - delete_gist
-    - open_gist_in_browser
+    - clear_gist_cache
+    - open_current_gist_in_browser
     - release_note
     - about_hao_gist
 

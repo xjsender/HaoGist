@@ -29,7 +29,6 @@ def get_settings():
     settings["token"] = s.get("token")
     settings["debug_mode"] = s.get("debug_mode", False)
     settings["auto_update_on_save"] = s.get("auto_update_on_save", True)
-    settings["hide_workspace_in_sidebar"] = s.get("hide_workspace_in_sidebar", False)
     settings["default_chrome_path"] = s.get("default_chrome_path", "")
     settings["delay_seconds_for_hiding_panel"] = s.get("delay_seconds_for_hiding_panel", 1)
 
@@ -118,33 +117,3 @@ def get_view_by_id(view_id):
             view = v
 
     return view
-    
-def show_workspace_in_sidebar(settings):
-    """Add new project folder to workspace
-       Just Sublime Text 3 can support this method
-    """
-
-    # Don't show the workspace in the sidebar
-    if settings["hide_workspace_in_sidebar"]: return
-
-    # Just ST3 supports, ST2 is not
-    workspace = settings["workspace"]
-    project_data = sublime.active_window().project_data()
-    if not project_data: project_data = {}
-    folders = []
-    if "folders" in project_data:
-        folders = project_data["folders"]
-
-    # If the workspace is already exist in project data,
-    # just update the patters, if not, add the workspace to it
-    for folder in folders:
-        # Parse windows path to AS-UNIX
-        if "\\" in folder : folder = folder.replace("\\", "/")
-        if "\\" in workspace : workspace = workspace.replace("\\", "/")
-
-        folders.append({"path": workspace})
-    else:
-        folders.append({"path": workspace})
-
-    project_data["folders"] = folders
-    sublime.active_window().set_project_data(project_data)

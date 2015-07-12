@@ -1,18 +1,60 @@
 [
-    {"caption": "HaoGist: Open Gist", "command": "open_gist", "args": {"read_cache": true}},
-    {"caption": "HaoGist: Open New Gist", "command": "open_gist", "args": {"read_cache": false}},
+    {"caption": "HaoGist: Open Gist From Cache", "command": "choose_gist", 
+        "args": {
+            "callback_command": "open_gist"
+        }
+    },
+
+    {"caption": "HaoGist: Open Gist From Server", "command": "choose_gist", 
+        "args": {
+            "read_cache": false,
+            "callback_command": "open_gist"
+        }
+    },
+
+    {"caption": "HaoGist: -"},
+
+    {"caption": "HaoGist: Add File To Gist", "command": "choose_gist", 
+        "args": {
+            "callback_command": "add_file_to_gist",
+            "include_files": false
+        }
+    },
+
+    {"caption": "HaoGist: Update Content To Gist", "command": "choose_gist", 
+        "args": {
+            "callback_command": "update_content_to_gist"
+        }
+    },
+
+    {"caption": "HaoGist: Delete File From Gist", "command": "choose_gist", 
+        "args": {
+            "include_files": false,
+            "callback_command": "delete_file_from_gist"
+        }
+    },
+
+    {"caption": "HaoGist: Delete Exist Gist", "command": "choose_gist", 
+        "args": {
+            "callback_command": "delete_exist_gist"
+        }
+    },
+
     {"caption": "HaoGist: Create Public Gist", "command": "create_gist", "args": {"public": true}},
     {"caption": "HaoGist: Create Private Gist", "command": "create_gist", "args": {"public": false}},
     {"caption": "HaoGist: Update Gist", "command": "update_gist"},
     {"caption": "HaoGist: Refresh Gist", "command": "refresh_gist"},
     {"caption": "HaoGist: Rename Gist", "command": "rename_gist"},
     {"caption": "HaoGist: Update Gist Description", "command": "update_gist_description"},
-    {"caption": "HaoGist: Delete Gist", "command": "delete_gist"},
-    {"caption": "HaoGist: Delete Gist From List", "command": "delete_gist_from_list"},
+    {"caption": "HaoGist: Delete Current Gist", "command": "delete_gist"},
     {"caption": "HaoGist: Clear Gist Cache", "command": "clear_gist_cache"},
-    {"caption": "HaoGist: Reload Gist Cache", "command": "reload_gist_cache"},
-    {"caption": "HaoGist: Refresh Gist Workspace", "command": "refresh_gist_workspace"},
-    {"caption": "HaoGist: Open Gist in Browser", "command": "open_gist_in_browser"},
+    {"caption": "HaoGist: Reload Gist Cache", "command": "choose_gist", "args": {"read_cache": false}},
+    {"caption": "HaoGist: Open Current Gist in Browser", "command": "open_current_gist_in_browser"},
+    {"caption": "HaoGist: Open Gist in Browser", "command": "choose_gist", 
+        "args": {
+            "callback_command": "open_gist_in_browser"
+        }
+    },
     {"caption": "HaoGist: About", "command": "about_hao_gist"},
     {"caption": "HaoGist: Release Note", "command": "release_note"},
     {"caption": "HaoGist: Settings – Default", "command": "open_file", 

@@ -7,7 +7,7 @@ from .panel import Printer
 
 def refresh_gist(res, options):
     # Get file_full_name
-    file_full_name = options["file_full_name"]
+    file_full_name = options["fileFullName"]
     base, filename = os.path.split(file_full_name)
 
     settings = util.get_settings()
@@ -17,27 +17,26 @@ def refresh_gist(res, options):
     show_message("%s update succeed" % filename)
 
 def open_gist(res, options):
-    filename = options["filename"]
+    filename = options["fileName"]
     settings = util.get_settings()
 
     workspace = settings["workspace"]
     if not os.path.exists(workspace):
         os.makedirs(workspace)
-    
-    # Show workspace in the sidebar
-    util.show_workspace_in_sidebar(settings)
 
     file_full_name = os.path.join(workspace, filename)
     with open(file_full_name, "wb") as fp:
         fp.write(res.text.encode("utf-8"))
 
     # Then open the file
-    sublime.active_window().open_file(file_full_name)
+    view = sublime.active_window().open_file(file_full_name)
+    view.settings().set("options", options)
 
 def delete_gist(res, options):
-    # Get file_full_name
-    if "file_full_name" in options:
-        file_full_name = options["file_full_name"]
+    # When delete current open gist, we need to delete the gist
+    # and close the open view
+    if "fileFullName" in options:
+        file_full_name = options["fileFullName"]
         base, filename = os.path.split(file_full_name)
 
         settings = util.get_settings()
@@ -50,14 +49,17 @@ def delete_gist(res, options):
 
         show_message("%s delete succeed" % filename)
     else:
-        show_message("Gist is delete successfully")
+        filename = options["fileName"]
+        show_message("Gist %s is delete successfully" % filename)
 
     # Reload gist cache
-    sublime.active_window().run_command('reload_gist_cache')
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
 
 def create_gist(res, options):
     # Get filename and content
-    filename = options["filename"]
+    filename = options["fileName"]
     content = options["content"]
 
     # Get settings
@@ -68,30 +70,68 @@ def create_gist(res, options):
     with open(file_full_name, "wb") as fp:
         fp.write(content.encode("utf-8"))
 
-    # Write cache to .cache/gists.json
-    util.add_gists_to_cache([res.json()])
-
     # Open created gist
-    sublime.active_window().open_file(file_full_name)
+    gist = res.json()
+    view = sublime.active_window().open_file(file_full_name)
+    view.settings().set("options", {
+        "gist": gist,
+        "fileName": filename,
+        "fileProperty": gist["files"][filename]
+    })
 
     # Success message
     show_message("%s is created successfully" % filename)
 
     # Reload gist cache
-    sublime.active_window().run_command('reload_gist_cache')
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
 
 def update_gist(res, options):
     # Get file_full_name
-    file_full_name = options["file_full_name"]
+    file_full_name = options["fileFullName"]
     base, filename = os.path.split(file_full_name)
     show_message("%s is update successfully" % filename)
 
     # Reload gist cache
-    sublime.active_window().run_command('reload_gist_cache')
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
+
+def update_to_gist(res, options):
+    # Show message to output panel
+    show_message("%s is update successfully" % options["fileName"])
+
+    # Reload gist cache
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
+
+def add_file_to_gist(res, options):
+    # Show message to output panel
+    show_message("%s is added to %s successfully" % (
+        options["fileName"], options["gistName"]
+    ))
+
+    # Reload gist cache
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
+
+def delete_file_from_gist(res, options):
+    # Show message to output panel
+    show_message("%s is deleted from %s successfully" % (
+        options["fileName"], options["gistName"]
+    ))
+
+    # Reload gist cache
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
 
 def rename_gist(res, options):
     # Get file_full_name
-    old_file_full_name = options["file_full_name"]
+    old_file_full_name = options["fileFullName"]
     old_filename = options["old_filename"]
     new_filename = options["new_filename"]
 
@@ -104,17 +144,20 @@ def rename_gist(res, options):
     # Rename 
     new_file_full_name = os.path.join(settings["workspace"], new_filename)
     os.rename(old_file_full_name, new_file_full_name)
-    sublime.active_window().open_file(new_file_full_name)
+    view = sublime.active_window().open_file(new_file_full_name)
+    view.settings().set("options", options["options"])
 
     show_message("%s is renamed to %s successfully" % (
         old_filename, new_filename
     ))
 
     # Reload gist cache
-    sublime.active_window().run_command('reload_gist_cache')
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
 
 def update_description(res, options):
-    file_full_name = options["file_full_name"]
+    file_full_name = options["fileFullName"]
     base, filename = os.path.split(file_full_name)
     desc = options["desc"]
 
@@ -123,7 +166,9 @@ def update_description(res, options):
     ))
 
     # Reload gist cache
-    sublime.active_window().run_command('reload_gist_cache')
+    sublime.active_window().run_command('choose_gist', {
+        "read_cache": False
+    })
 
 def add_gists_to_cache(res, options):
     util.add_gists_to_cache(res.json())
@@ -133,6 +178,6 @@ def add_gists_to_cache(res, options):
 
 def show_message(msg):
     settings = util.get_settings()
-    Printer.get("log").write(msg)
-    sublime.set_timeout_async(Printer.get("log").hide_panel, 
+    Printer.get("gist_log").write(msg)
+    sublime.set_timeout_async(Printer.get("gist_log").hide_panel, 
         settings["delay_seconds_for_hiding_panel"] * 1000)

@@ -32,14 +32,14 @@ class ThreadProgress():
 
             res = self.api.res
             if res == None:
-                Printer.get("log").write("Network connection timeout")
+                Printer.get("gist_log").write("Network connection timeout")
                 return
 
             if res.status_code > 399:
                 result = res.json()
                 if "message" in result:
-                    Printer.get("log").write(result["message"])
-                print (res)
+                    Printer.get("gist_log").write(result["message"])
+                print (res.content)
                 return
 
             # Invoke _callback

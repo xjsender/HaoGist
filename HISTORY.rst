@@ -5,6 +5,12 @@ Release History
 ---------------
 
 
+0.2.4 (2015-07-16)
+++++++++++++++++++
+* List folder and its related files when open gist, if you click list folder name, plugin will open all files in this gist
+* Add http proxy for all http request, fix issue #4
+
+
 0.2.3 (2015-07-11)
 ++++++++++++++++++
 * Move events module from main.py to new event.py

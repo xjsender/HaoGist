@@ -86,24 +86,40 @@ class ChooseGist(sublime_plugin.WindowCommand):
                         "gist": _gist
                     }
                 else:
+                    # Get gist description
+                    description = _gist["description"]
+                    if not description:
+                        description = "gist:%s" % _gist["id"]
+
+                    files_number = len(_gist["files"])
+                    if files_number > 1:
+                        self.items.append(description)
+
+                    # Add gist files to items
+                    gist_items_property = []
                     for key, value in _gist["files"].items():
+                        if files_number > 1:
+                            key = "%s%s" % (" " * 8, key)
                         self.items.append(key)
-                        self.items_property[key] = {
+                        self.items_property[key] = [{
                             "fileName": key,
                             "fileProperty": value,
                             "gist": _gist
-                        }
+                        }]
+                        gist_items_property.extend(self.items_property[key])
 
+                    # Populate items_property
+                    self.items_property[description] = gist_items_property
 
             self.window.show_quick_panel(self.items, self.on_done)
 
     def on_done(self, index):
         if index == -1: return
 
-        chosen_item = self.items[index]
-        self.window.run_command(self.callback_command, {
-            "options": self.items_property[chosen_item]
-        })
+        for item in self.items_property[self.items[index]]:
+            self.window.run_command(self.callback_command, {
+                "options": item
+            })
 
 class OpenGist(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):
@@ -121,7 +137,7 @@ class OpenGist(sublime_plugin.WindowCommand):
         api = GistApi(settings["token"])
         thread = threading.Thread(target=api.retrieve, args=(fileProperty["raw_url"], ))
         thread.start()
-        ThreadProgress(api, thread, 'Opening Gist %s' % filename, 
+        ThreadProgress(api, thread, 'Opening Gist %s' % filename.strip(), 
             callback.open_gist, _callback_options=options
         )
 
@@ -499,4 +515,3 @@ class AboutHaoGist(sublime_plugin.WindowCommand):
 
     def run(self):
         util.open_with_browser("https://github.com/xjsender/HaoGist")
-

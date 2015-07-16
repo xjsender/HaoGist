@@ -31,6 +31,7 @@ def get_settings():
     settings["auto_update_on_save"] = s.get("auto_update_on_save", True)
     settings["default_chrome_path"] = s.get("default_chrome_path", "")
     settings["delay_seconds_for_hiding_panel"] = s.get("delay_seconds_for_hiding_panel", 1)
+    settings["http_proxies"] = s.get("http_proxies", {})
 
     # If user didn't set the workspace
     workspace = s.get("workspace")

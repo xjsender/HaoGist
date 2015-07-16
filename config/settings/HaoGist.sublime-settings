@@ -17,5 +17,16 @@
     "auto_update_on_save": true,
 
     // If set to true, debug message will be output to console
-    "debug_mode": false
+    "debug_mode": false,
+
+    // http_proxies settings, you can set it as below example,
+    // see more detail at:
+    // http://docs.python-requests.org/en/latest/user/advanced/#proxies
+    /*    
+        "http_proxies": {
+            "http"  : "http://user:%23Cpassword%23C:server:port",
+            "https" : "http://user:%23Cpassword%23C:server:port"
+        }
+    */
+    "http_proxies": {}
 }

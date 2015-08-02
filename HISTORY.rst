@@ -4,6 +4,11 @@ Release History
 
 ---------------
 
+0.2.5 (2015-08-03)
+++++++++++++++++++
+* Fix progress message problem when one gist has multiple files
+* Use MONOSPACE_FONT in the quick panel for choosing gist
+
 
 0.2.4 (2015-07-16)
 ++++++++++++++++++

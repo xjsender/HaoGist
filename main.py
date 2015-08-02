@@ -99,10 +99,10 @@ class ChooseGist(sublime_plugin.WindowCommand):
                     gist_items_property = []
                     for key, value in _gist["files"].items():
                         if files_number > 1:
-                            key = "%s%s" % (" " * 8, key)
+                            key = "%s%s" % (" " * 4, key)
                         self.items.append(key)
                         self.items_property[key] = [{
-                            "fileName": key,
+                            "fileName": key.strip(),
                             "fileProperty": value,
                             "gist": _gist
                         }]
@@ -111,7 +111,8 @@ class ChooseGist(sublime_plugin.WindowCommand):
                     # Populate items_property
                     self.items_property[description] = gist_items_property
 
-            self.window.show_quick_panel(self.items, self.on_done)
+            self.window.show_quick_panel(self.items, self.on_done, 
+                sublime.MONOSPACE_FONT)
 
     def on_done(self, index):
         if index == -1: return
@@ -387,7 +388,6 @@ class RenameGist(BaseGistView, sublime_plugin.TextCommand):
                 }
             }
         }
-        print (json.dumps(data))
 
         api = GistApi(self.settings["token"])
         thread = threading.Thread(target=api.patch, args=(self.gist_url, data, ))

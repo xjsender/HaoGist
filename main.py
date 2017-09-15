@@ -117,10 +117,16 @@ class ChooseGist(sublime_plugin.WindowCommand):
     def on_done(self, index):
         if index == -1: return
 
-        for item in self.items_property[self.items[index]]:
+        item_property = self.items_property[self.items[index]]
+        if isinstance(item_property, list):
+            for item in item_property:
+                self.window.run_command(self.callback_command, {
+                    "options": item
+                })
+        else:
             self.window.run_command(self.callback_command, {
-                "options": item
-            })
+                    "options": item_property
+                })
 
 class OpenGist(sublime_plugin.WindowCommand):
     def __init__(self, *args, **kwargs):

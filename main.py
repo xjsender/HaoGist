@@ -100,6 +100,15 @@ class ChooseGist(sublime_plugin.WindowCommand):
                     for key, value in _gist["files"].items():
                         if files_number > 1:
                             key = "%s%s" % (" " * 4, key)
+                        else:
+                            key = _gist["description"] or key
+                            if key in self.items:
+                                self._update_item_title(key)
+                                key = "{key} ({filename})".format(
+                                    key=key,
+                                    filename=value["filename"],
+                                )
+
                         self.items.append(key)
                         self.items_property[key] = [{
                             "fileName": key.strip(),
@@ -113,6 +122,19 @@ class ChooseGist(sublime_plugin.WindowCommand):
 
             self.window.show_quick_panel(self.items, self.on_done, 
                 sublime.MONOSPACE_FONT)
+
+    def _update_item_title(self, key):
+
+        """ This method finds the item, removes and puts it back in with the new
+            name by appending the filename in the title.
+        """
+        gist = self.items_property[key]
+        gist_filename = gist[0]["fileProperty"]["filename"]
+        new_key = "{key} ({filename})".format(key=key, filename=gist_filename)
+        self.items.remove(key)
+        self.items.append(new_key)
+        del self.items_property[key]
+        self.items_property[new_key] = gist
 
     def on_done(self, index):
         if index == -1: return

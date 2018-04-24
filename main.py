@@ -98,6 +98,7 @@ class ChooseGist(sublime_plugin.WindowCommand):
                     # Add gist files to items
                     gist_items_property = []
                     for key, value in _gist["files"].items():
+                        filename = key
                         if files_number > 1:
                             key = "%s%s" % (" " * 4, key)
                         else:
@@ -111,7 +112,7 @@ class ChooseGist(sublime_plugin.WindowCommand):
 
                         self.items.append(key)
                         self.items_property[key] = [{
-                            "fileName": key.strip(),
+                            "fileName": filename,
                             "fileProperty": value,
                             "gist": _gist
                         }]

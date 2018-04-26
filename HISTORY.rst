@@ -4,6 +4,17 @@ Release History
 
 ---------------
 
+0.2.7 (2015-08-03)
+++++++++++++++++++
+* Enhancement: show gist description in the palette if available. This helps users search through their gists easier.
+
+
+0.2.6 (2015-08-03)
+++++++++++++++++++
+* Fix bug for command ``Add File to Gist``
+* Fix bug for command ``Delete File from Gist``
+
+
 0.2.5 (2015-08-03)
 ++++++++++++++++++
 * Fix progress message problem when one gist has multiple files

@@ -252,9 +252,15 @@ class AddFileToGist(sublime_plugin.TextCommand):
         if not gist_description:
             gist_description = "gist:%s" % self.gist["id"]
 
+        if self.view.file_name():
+            # Get the current file's base name
+            basename = os.path.basename(self.view.file_name())
+        else:
+            basename = ''
+
         message = "Input fileName to be added into %s" % gist_description
         sublime.active_window().show_input_panel(message, 
-            "", self.on_input_name, None, None)
+            basename, self.on_input_name, None, None)
 
     def on_input_name(self, filename):
         if not filename:
@@ -346,8 +352,14 @@ class CreateGist(sublime_plugin.TextCommand):
         self.public = public
         self.settings = util.get_settings()
 
+        if self.view.file_name():
+            # Get the current file's base name
+            basename = os.path.basename(self.view.file_name())
+        else:
+            basename = ''
+
         sublime.active_window().show_input_panel("Gist File Name: (Required)", 
-            '', self.on_input_name, None, None)
+           basename, self.on_input_name, None, None)
 
     def on_input_name(self, filename):
         if not filename:
